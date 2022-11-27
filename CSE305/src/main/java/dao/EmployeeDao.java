@@ -114,6 +114,33 @@ public class EmployeeDao {
 
 		List<Employee> employees = new ArrayList<Employee>();
 		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from Employee");
+		
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				Employee employee = new Employee();
+				employee.setId(rs.getString("employeeID"));
+				employee.setStartDate(rs.getString("startDate"));
+				employee.setHourlyRate(rs.getFloat("hourlyRate"));
+				employee.setLevel(rs.getString("level"));
+				employee.setFirstName(rs.getString("firstName"));
+				employee.setLastName(rs.getString("lastName"));
+				employee.setEmail(rs.getString("email"));
+				employee.setSsn(rs.getString("ssn"));
+				employee.setAddress(rs.getString("address"));
+				employee.setLocation(rs.getLocation("location"));
+				employee.setTelephone(rs.getString("telephone"));
+				employees.add(employee);
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
 	
 		return employees;
 	}
@@ -144,7 +171,7 @@ public class EmployeeDao {
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
-				employee.setSsn(rs.getString("ssn"))
+				employee.setSsn(rs.getString("ssn"));
 				employee.setAddress(rs.getString("address"));
 				employee.setLocation(rs.getLocation("location"));
 				employee.setTelephone(rs.getString("telephone"));
