@@ -1,5 +1,9 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,10 +90,17 @@ public class EmployeeDao {
 		 * You need to handle the database deletion and return "success" or "failure" based on result of the database deletion.
 		 */
 		
-		/*Sample data begins*/
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
+			
+		}catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
 		return "success";
-		/*Sample data ends*/
-
 	}
 
 	
@@ -102,28 +113,8 @@ public class EmployeeDao {
 		 */
 
 		List<Employee> employees = new ArrayList<Employee>();
-
-		Location location = new Location();
-		location.setCity("Stony Brook");
-		location.setState("NY");
-		location.setZipCode(11790);
-
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Employee employee = new Employee();
-			employee.setId("111-11-1111");
-			employee.setEmail("shiyong@cs.sunysb.edu");
-			employee.setFirstName("Shiyong");
-			employee.setLastName("Lu");
-			employee.setAddress("123 Success Street");
-			employee.setLocation(location);
-			employee.setTelephone("5166328959");
-			employee.setEmployeeID("631-413-5555");
-			employee.setHourlyRate(100);
-			employees.add(employee);
-		}
-		/*Sample data ends*/
 		
+	
 		return employees;
 	}
 
@@ -134,8 +125,35 @@ public class EmployeeDao {
 		 * employeeID, which is the Employee's ID who's details have to be fetched, is given as method parameter
 		 * The record is required to be encapsulated as a "Employee" class object
 		 */
+		
+		Employee employee = new Employee();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
+		
 
-		return getDummyEmployee();
+			/*Sample data begins*/
+			while(rs.next()) {
+				employee.setId(rs.getString("employeeID"));
+				employee.setStartDate(rs.getString("startDate"));
+				employee.setHourlyRate(rs.getFloat("hourlyRate"));
+				employee.setLevel(rs.getString("level"));
+				employee.setFirstName(rs.getString("firstName"));
+				employee.setLastName(rs.getString("lastName"));
+				employee.setEmail(rs.getString("email"));
+				employee.setSsn(rs.getString("ssn"))
+				employee.setAddress(rs.getString("address"));
+				employee.setLocation(rs.getLocation("location"));
+				employee.setTelephone(rs.getString("telephone"));
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		return employee;
 	}
 	
 	public Employee getHighestRevenueEmployee() {
@@ -154,8 +172,24 @@ public class EmployeeDao {
 		 * username, which is the Employee's email address who's Employee ID has to be fetched, is given as method parameter
 		 * The Employee ID is required to be returned as a String
 		 */
+		
+		String result = "";
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from Employee where email like \'%" + username + "%\'");
+		
 
-		return "111-11-1111";
+			/*Sample data begins*/
+			result = rs.getString("email");
+			
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		return result;	
 	}
 
 }
