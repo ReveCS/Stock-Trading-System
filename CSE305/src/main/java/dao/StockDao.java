@@ -78,7 +78,7 @@ public class StockDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM Stock");
+			ResultSet rs = st.executeQuery("CALL GetAllStocks()");
 
 			/* Create stock for each, then add to stocks list (result) */
 			while(rs.next()) {
