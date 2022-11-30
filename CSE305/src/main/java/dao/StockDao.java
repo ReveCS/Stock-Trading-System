@@ -106,7 +106,27 @@ public class StockDao {
 		 * The students code to fetch data from the database will be written here
 		 * Return stock matching symbol
 		 */
-        return getDummyStock();
+    	Stock result = new Stock();
+    	
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE StockSymbol LIKE \'%" + stockSymbol + "%\\");
+
+			/*Sample data begins*/
+		    result.setSymbol(rs.getString("StockSymbol"));
+		    result.setName(rs.getString("CompanyName"));
+		    result.setType(rs.getString("Type"));
+		    result.setPrice(rs.getFloat("PricePerShare"));
+		    result.setNumShares(rs.getInt("NumShares"));
+			
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return result;
     }
 
     public String setStockPrice(String stockSymbol, double stockPrice) {

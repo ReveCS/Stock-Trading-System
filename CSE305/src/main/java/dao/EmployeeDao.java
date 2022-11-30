@@ -124,16 +124,20 @@ public class EmployeeDao {
 			/*Sample data begins*/
 			while(rs.next()) {
 				Employee employee = new Employee();
-				employee.setId(rs.getString("employeeID"));
-				employee.setStartDate(rs.getString("startDate"));
-				employee.setHourlyRate(rs.getFloat("hourlyRate"));
+				employee.setId(rs.getString("EmpID"));
+				employee.setStartDate(rs.getString("StartDate"));
+				employee.setHourlyRate(rs.getFloat("HourlyRate"));
 				employee.setLevel(rs.getString("level"));
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
 				employee.setSsn(rs.getString("ssn"));
-				employee.setAddress(rs.getString("address"));
-				employee.setLocation(rs.getLocation("location"));
+				employee.setAddress(rs.getString("Address"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				employee.setLocation(location);
 				employee.setTelephone(rs.getString("telephone"));
 				employees.add(employee);
 			}
@@ -173,7 +177,11 @@ public class EmployeeDao {
 				employee.setEmail(rs.getString("email"));
 				employee.setSsn(rs.getString("ssn"));
 				employee.setAddress(rs.getString("address"));
-				employee.setLocation(rs.getLocation("location"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				employee.setLocation(location);
 				employee.setTelephone(rs.getString("telephone"));
 			}
 			/*Sample data ends*/

@@ -2,6 +2,10 @@ package dao;
 
 import model.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +73,39 @@ public class OrderDao {
 
         return orders;
     }
+    
+    public Order getTrailingStopOrder() {
+        TrailingStopOrder order = new TrailingStopOrder();
+
+        return order;
+    }
+
+    public Order getMarketOrder() {
+        MarketOrder order = new MarketOrder();
+
+        return order;
+    }
+
+    public Order getMarketOnCloseOrder() {
+        MarketOnCloseOrder order = new MarketOnCloseOrder();
+
+        return order;
+    }
+
+    public Order getHiddenStopOrder() {
+        HiddenStopOrder order = new HiddenStopOrder();
+
+        return order;
+    }
+
+    
+    
+    public List<Order> getOrders() {
+        List<Order> orders = new ArrayList<Order>();
+
+        
+        return orders;
+    }
 
     public String submitOrder(Order order, Customer customer, Employee employee, Stock stock) {
 
@@ -87,6 +124,24 @@ public class OrderDao {
         /*
 		 * Student code to get orders by stock symbol
          */
+    	
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from Employee");
+		
+
+			/*Sample data begins*/
+			while(rs.next()) {
+			
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+    	
+    	
         return getDummyOrders();
     }
 
