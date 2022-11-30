@@ -328,3 +328,5 @@ create_procedures = [
 
 for create_procedures_query in create_procedures:
     mycursor.execute(create_procedures_query)
+
+print("Successful")
