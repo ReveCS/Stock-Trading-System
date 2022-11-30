@@ -76,11 +76,11 @@ public class StockDao {
     	
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM Stock");
 
-			/*Sample data begins*/
+			/* Create stock for each, then add to stocks list (result) */
 			while(rs.next()) {
 		        Stock stock = new Stock();
 		        stock.setSymbol(rs.getString("StockSymbol"));
