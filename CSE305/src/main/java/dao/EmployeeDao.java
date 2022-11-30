@@ -92,7 +92,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
 			
@@ -116,7 +116,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee");
 		
@@ -157,7 +157,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmater", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
 		
@@ -200,11 +200,11 @@ public class EmployeeDao {
 		 * The Employee ID is required to be returned as a String
 		 */
 		
-		String result = "";
+		String result = "";	
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee where email like \'%" + username + "%\'");
 		
