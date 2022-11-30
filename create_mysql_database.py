@@ -8,7 +8,7 @@ if (len(sys.argv) < 3):
 mydb = mysql.connector.connect(
   host="localhost",
   user=sys.argv[1],
-  password=sys.argv[2]
+  password=sys.argv[2],
 )
 
 
@@ -18,7 +18,7 @@ mycursor.execute("SHOW DATABASES")
 db_exist = False
 
 for x in mycursor:
-    if (x[0] == bytearray(b'stonksmaster')):
+    if (x[0] == "stonksmaster"):
         db_exist = True
 
 if (db_exist):
@@ -186,6 +186,14 @@ for insert_dummy_query in insert_into:
 
 # Create procedures.
 create_procedures = [
+    "CREATE PROCEDURE GetAllStocks() \
+        BEGIN \
+            SELECT * FROM Stock; \
+        END;\
+    ",
+
+
+
     "CREATE PROCEDURE RecordOrder( \
 			IN AccId INTEGER, \
 			IN ClientId INTEGER, \
