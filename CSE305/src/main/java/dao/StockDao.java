@@ -1,8 +1,13 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 
 import model.Stock;
 
@@ -32,25 +37,66 @@ public class StockDao {
     }
 
     public List<Stock> getActivelyTradedStocks() {
-
-		/*
+    	/*
 		 * The students code to fetch data from the database will be written here
 		 * Query to fetch details of all the stocks has to be implemented
 		 * Return list of actively traded stocks
 		 */
+    	List<Stock> result = new ArrayList<Stock>();
+    	
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT t.StockId AS 'Most Actively Traded Stocks', COUNT(*) AS Trades FROM Trade AS t GROUP BY StockId ORDER BY Trades DESC;");
 
-        return getDummyStocks();
+			/*Sample data begins*/
+			while(rs.next()) {
+		        Stock stock = new Stock();
+		        stock.setSymbol(rs.getString("Most Actively Traded Stocks"));
+				result.add(stock);
+			}
+			
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+
+        return result;
 
     }
 
 	public List<Stock> getAllStocks() {
-		
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Return list of stocks
 		 */
 		
-		return getDummyStocks();
+		List<Stock> result = new ArrayList<Stock>();
+    	
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM Stock");
+
+			/*Sample data begins*/
+			while(rs.next()) {
+		        Stock stock = new Stock();
+		        stock.setSymbol(rs.getString("StockSymbol"));
+		        stock.setName(rs.getString("CompanyName"));
+		        stock.setType(rs.getString("Type"));
+		        stock.setPrice(rs.getFloat("PricePerShare"));
+		        stock.setNumShares(rs.getInt("NumShares"));
+				result.add(stock);
+			}
+			
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return result;
 
 	}
 
