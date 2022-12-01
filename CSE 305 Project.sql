@@ -8,6 +8,7 @@ CREATE TABLE Person (
 SSN INTEGER CHECK (SSN > 0 AND SSN < 1000000000),
 LastName VARCHAR(20) NOT NULL,
 FirstName VARCHAR(20) NOT NULL,
+Email VARCHAR(32),
 Address VARCHAR(20),
 ZipCode MEDIUMINT,
 Telephone BIGINT,
@@ -20,7 +21,7 @@ CREATE TABLE Employee (
 EmpId INTEGER,
 StartDate DATE,
 HourlyRate INTEGER,
-isManager BOOLEAN,
+EmpRole VARCHAR(20),
 PRIMARY KEY (EmpId),
 FOREIGN KEY (EmpId) REFERENCES Person (SSN)
 ON DELETE NO ACTION
@@ -28,7 +29,6 @@ ON UPDATE CASCADE );
 
 CREATE TABLE Clients (
 ClientId INTEGER,
-Email VARCHAR(32),
 CreditCardNumber BIGINT,
 Rating INTEGER,
 PRIMARY KEY (ClientId),
@@ -117,24 +117,24 @@ INSERT INTO Location VALUES (11790, 'Stony Brook', 'NY');
 INSERT INTO Location VALUES (93536, 'Los Angeles', 'CA');
 INSERT INTO Location VALUES (11794, 'Stony Brook', 'NY');
 
-INSERT INTO Person VALUES (111111111, 'Yang', 'Shang', '123 Success Street', 11790, 5166328959);
-INSERT INTO Person VALUES (222222222, 'Du', 'Victor', '456 Fortune Road', 11790, 5166324360);
-INSERT INTO Person VALUES (333333333, 'Smith', 'John', '789 Peace Blvd', 93536, 3154434321);
-INSERT INTO Person VALUES (444444444, 'Philip', 'Lewis', '135 Knowledge Lane', 11794, 5166668888);
-INSERT INTO Person VALUES (123456789, 'Smith', 'David', '123 College road', 11790, 5162152345);
-INSERT INTO Person VALUES (789123456, 'Warren', 'David', '456 Sunken Street', 11790, 5162152345);
+INSERT INTO Person VALUES (111111111, 'Yang', 'Shang', 'syang@cs.sunysb.edu', '123 Success Street', 11790, 5166328959);
+INSERT INTO Person VALUES (222222222, 'Du', 'Victor', 'vicdu@cs.sunysb.edu', '456 Fortune Road', 11790, 5166324360);
+INSERT INTO Person VALUES (333333333, 'Smith', 'John', 'jsmith@ic.sunysb.edu', '789 Peace Blvd', 93536, 3154434321);
+INSERT INTO Person VALUES (444444444, 'Philip', 'Lewis', 'pml@cs.sunysb.edu', '135 Knowledge Lane', 11794, 5166668888);
+INSERT INTO Person VALUES (123456789, 'Smith', 'David', 'dsmith@cs.sunysb.edu', '123 College road', 11790, 5162152345);
+INSERT INTO Person VALUES (789123456, 'Warren', 'David', 'dwarren@cs.sunysb.edu', '456 Sunken Street', 11790, 5162152345);
 
-INSERT INTO Employee VALUES (123456789, '2005-11-01', 60, 'false');
-INSERT INTO Employee VALUES (789123456, '2005-11-01', 50, 'true');
+INSERT INTO Employee VALUES (123456789, '2005-11-01', 60, 'rep');
+INSERT INTO Employee VALUES (789123456, '2005-11-01', 50, 'manager');
 
 INSERT INTO Stock VALUES ('GM',	'General Motors', 'automotive', 34.23, 1000);
 INSERT INTO Stock VALUES ('IBM', 'IBM', 'computer', 91.41, 500);
 INSERT INTO Stock VALUES ('F', 'Ford', 'automotive', 9.0, 750);
 
-INSERT INTO Clients VALUES (111111111, 'syang@cs.sunysb.edu', 1234567812345678, 1);
-INSERT INTO Clients VALUES (222222222, 'vicdu@cs.sunysb.edu', 5678123456781234, 1);
-INSERT INTO Clients VALUES (333333333, 'jsmith@ic.sunysb.edu', 2345678923456789, 1);
-INSERT INTO Clients VALUES (444444444, 'pml@cs.sunysb.edu', 6789234567892345, 1);
+INSERT INTO Clients VALUES (111111111, 1234567812345678, 1);
+INSERT INTO Clients VALUES (222222222, 5678123456781234, 1);
+INSERT INTO Clients VALUES (333333333, 2345678923456789, 1);
+INSERT INTO Clients VALUES (444444444, 6789234567892345, 1);
 
 INSERT INTO Account VALUES (444444444, 1, '2006-10-01');
 INSERT INTO Account VALUES (222222222, 1, '2006-10-15');
@@ -159,10 +159,10 @@ INSERT INTO Trade VALUES (1, 444444444, 123456789, 1, 1, 'GM');
 INSERT INTO Trade VALUES (1, 222222222, 123456789, 2, 2, 'IBM');
 INSERT INTO Trade VALUES (1, 444444444, 123456789, 3, 3, 'GM');
 
-INSERT INTO PriceHistory VALUES (‘F’, ‘2022-09-15’, 9.00);
-INSERT INTO PriceHistory VALUES (‘GM’, ‘2022-10-08’, 34.23);
-INSERT INTO PriceHistory VALUES (‘IBM’, ‘2022-11-11’, 90.23);
-INSERT INTO PriceHistory VALUES (‘GM’, ‘2022-12-25’, 35.01);
+INSERT INTO PriceHistory VALUES ('F', '2022-09-15', 9.00);
+INSERT INTO PriceHistory VALUES ('GM', '2022-10-08', 34.23);
+INSERT INTO PriceHistory VALUES ('IBM', '2022-11-11', 90.23);
+INSERT INTO PriceHistory VALUES ('GM', '2022-12-25', 35.01);
 
 # MANAGER TRANSACTIONS 
 
@@ -184,12 +184,46 @@ DELIMITER ;
 
 # Add, Edit and Delete information for an employee
 DELIMITER $$
+CREATE PROCEDURE AddEmployee(
+IN nId INTEGER,
+IN nStartDate Date,
+IN nHourlyRate INTEGER,
+IN nRole VARCHAR(20),
+IN nLastName VARCHAR(20),
+IN nFirstName VARCHAR(20),
+IN nEmail VARCHAR(32),
+IN nAddress VARCHAR(20),
+IN nZipCode VARCHAR(20),
+IN nCity VARCHAR(20),
+IN nState VARCHAR(20),
+IN nTelephone BIGINT)
+BEGIN
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
+   	 
+	START TRANSACTION;
+    INSERT INTO Location VALUES (nZipCode, nCity, nState);
+	INSERT INTO Person VALUES (nId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
+    INSERT INTO Employee VALUES (nId, nStartDate, nHourlyRate, nRole);
+	COMMIT;
+END$$
+DELIMITER ;
+
+CALL AddEmployee(098765432, '2010-09-13', 75, 'rep', 'Sparrow', 'Jack', 'jsparrow@sunsyb.edu', '910-03 Hever Blvd', 10982, 'Big City', 'California', '7186450298');
+
+DELIMITER $$
 CREATE PROCEDURE UpdateEmployee(
 IN nId INTEGER,
 IN nStartDate Date,
 IN nHourlyRate INTEGER,
+IN nRole VARCHAR(20),
+IN nSSN INTEGER,
 IN nLastName VARCHAR(20),
 IN nFirstName VARCHAR(20),
+IN nEmail VARCHAR(32),
 IN nAddress VARCHAR(20),
 IN nTelephone BIGINT)
 BEGIN
@@ -203,13 +237,15 @@ BEGIN
 	UPDATE Person SET
 		LastName=nLastName,
 		FirstName=nFirstName,
+        Email=nEmail,
 		Address=nAddress,
 		Telephone=nTelephone
-	WHERE SSN = nId;
+	WHERE SSN = nSSN;
    	 
 	UPDATE Employee SET
 		StartDate = nStartDate,
-		HourlyRate = nHourlyRate
+		HourlyRate = nHourlyRate,
+        EmpRole = nRole
 	WHERE EmpId = nId;
 	COMMIT;
 END$$
@@ -672,3 +708,4 @@ END $$
 DELIMITER ;
 
 CALL Best_Seller();
+
