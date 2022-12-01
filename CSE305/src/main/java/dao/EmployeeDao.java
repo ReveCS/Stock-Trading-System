@@ -53,7 +53,6 @@ public class EmployeeDao {
     }
 
 	public String addEmployee(Employee employee) {
-
 		/*
 		 * All the values of the add employee form are encapsulated in the employee object.
 		 * These can be accessed by getter methods (see Employee class in model package).
@@ -63,6 +62,28 @@ public class EmployeeDao {
 		 */
 		
 		/*Sample data begins*/
+		String employeeID = employee.getEmployeeID();
+		String startDate = employee.getStartDate();
+		float hourlyRate = employee.getHourlyRate();
+		String level = employee.getLevel();
+		String firstName = employee.getFirstName();
+		String lastName = employee.getLastName();
+		String email = employee.getEmail();
+		String ssn = employee.getSsn();
+		String address = employee.getAddress();
+		Location location = employee.getLocation();
+		String telephone = employee.getTelephone();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("");
+			
+		}catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
 		return "success";
 		/*Sample data ends*/
 
@@ -127,7 +148,7 @@ public class EmployeeDao {
 				employee.setId(rs.getString("EmpID"));
 				employee.setStartDate(rs.getString("StartDate"));
 				employee.setHourlyRate(rs.getFloat("HourlyRate"));
-				employee.setLevel(rs.getString("level"));
+				employee.setLevel(rs.getString("isManager"));
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
@@ -171,7 +192,7 @@ public class EmployeeDao {
 				employee.setId(rs.getString("employeeID"));
 				employee.setStartDate(rs.getString("startDate"));
 				employee.setHourlyRate(rs.getFloat("hourlyRate"));
-				employee.setLevel(rs.getString("level"));
+				employee.setLevel(rs.getString("isManager""));
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
