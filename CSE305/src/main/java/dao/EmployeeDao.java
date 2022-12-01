@@ -72,13 +72,16 @@ public class EmployeeDao {
 		String ssn = employee.getSsn();
 		String address = employee.getAddress();
 		Location location = employee.getLocation();
+		String city = location.getCity();
+		String state = location.getState();
+		int zipcode = location.getZipCode();
 		String telephone = employee.getTelephone();
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("");
+			ResultSet rs = st.executeQuery("CALL AddEmployee(\'%" + employeeID + "\'%, \'%" + startDate + "\'%, " + hourlyRate + ", \'%" + level + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -99,6 +102,31 @@ public class EmployeeDao {
 		 */
 		
 		/*Sample data begins*/
+		String employeeID = employee.getEmployeeID();
+		String startDate = employee.getStartDate();
+		float hourlyRate = employee.getHourlyRate();
+		String level = employee.getLevel();
+		String firstName = employee.getFirstName();
+		String lastName = employee.getLastName();
+		String email = employee.getEmail();
+		String ssn = employee.getSsn();
+		String address = employee.getAddress();
+		Location location = employee.getLocation();
+		String city = location.getCity();
+		String state = location.getState();
+		int zipcode = location.getZipCode();
+		String telephone = employee.getTelephone();
+	
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + startDate + "\'%, " + hourlyRate + ", \'%" + level + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			
+		}catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
 		return "success";
 		/*Sample data ends*/
 
@@ -116,7 +144,6 @@ public class EmployeeDao {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
-			
 		}catch (Exception e) {
 			System.out.println(e);
 			return "failure";
@@ -185,7 +212,6 @@ public class EmployeeDao {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmater", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
-		
 
 			/*Sample data begins*/
 			while(rs.next()) {

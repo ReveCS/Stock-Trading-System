@@ -43,7 +43,4 @@ public class Employee extends Person {
 	private String startDate;
 	private float hourlyRate;
 	private String level;
-
-
-
 }
