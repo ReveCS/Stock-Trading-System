@@ -146,6 +146,10 @@ INSERT INTO StockPortfolio VALUES (444444444, 1, 'GM', 250);
 INSERT INTO Orders VALUES (1, 75, 25.51, '2022-11-07', NULL, 'Market', 'Buy');
 INSERT INTO Orders VALUES (2, 10, 105.61, '2022-11-07', 5, 'TrailingStop', 'Sell');
 INSERT INTO Orders VALUES (3, 50, 50, '2022-11-08', NULL, 'Market', 'Sell');
+INSERT INTO Orders VALUES (4, 24, 90, '2022-11-11', NULL, 'HiddenStop', 'Sell');
+INSERT INTO Orders VALUES (5, 5, 87.53, '2022-11-11', NULL, 'HiddenStop', 'Sell');
+INSERT INTO Orders VALUES (6, 37, 79.57, '2022-11-12', NULL, 'HiddenStop', 'Sell');
+INSERT INTO Orders VALUES (7, 71, 40.32, '2022-11-15', NULL, 'HiddenStop', 'Sell');
 
 INSERT INTO Transactions VALUES (1, 95.66, '2022-11-07', 25.51);
 INSERT INTO Transactions VALUES (2, 45, '2022-11-07', 90);
@@ -559,6 +563,24 @@ END $$
 DELIMITER ;
 
 CALL trailing_stop_History();
+
+DELIMITER $$
+CREATE PROCEDURE hidden_stop_History() # IN PriceType varchar
+BEGIN
+SELECT o.OrderId,
+o.DateTime,
+o.NumShares,
+o.PricePerShare,
+o.PriceType,
+o.Percentage,
+o.OrderType
+FROM 
+Orders as o
+    	where O.PriceType = 'HiddenStop';
+END $$
+DELIMITER ;
+
+call trailing_stop_History();
 
 # A history of all current and past orders a customer has placed
 DELIMITER $$
