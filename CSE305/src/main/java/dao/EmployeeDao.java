@@ -4,8 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import model.Customer;
 import model.Employee;
@@ -100,10 +105,12 @@ public class EmployeeDao {
 		 * The sample code returns "success" by default.
 		 * You need to handle the database update and return "success" or "failure" based on result of the database update.
 		 */
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
 		
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
 		String startDate = employee.getStartDate();
+		LocalDate date = LocalDate.parse(startDate, formatter);
 		float hourlyRate = employee.getHourlyRate();
 		String level = employee.getLevel();
 		String firstName = employee.getFirstName();
@@ -121,7 +128,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + startDate + "\'%, " + hourlyRate + ", \'%" + level + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + level + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -161,6 +168,7 @@ public class EmployeeDao {
 		 */
 
 		List<Employee> employees = new ArrayList<Employee>();
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -173,7 +181,7 @@ public class EmployeeDao {
 			while(rs.next()) {
 				Employee employee = new Employee();
 				employee.setId(rs.getString("EmpID"));
-				employee.setStartDate(rs.getString("StartDate"));
+				employee.setStartDate(formatter.format(rs.getDate("StartDate")));
 				employee.setHourlyRate(rs.getFloat("HourlyRate"));
 				employee.setLevel(rs.getString("isManager"));
 				employee.setFirstName(rs.getString("firstName"));
@@ -206,6 +214,7 @@ public class EmployeeDao {
 		 */
 		
 		Employee employee = new Employee();
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -216,7 +225,7 @@ public class EmployeeDao {
 			/*Sample data begins*/
 			while(rs.next()) {
 				employee.setId(rs.getString("employeeID"));
-				employee.setStartDate(rs.getString("startDate"));
+				employee.setStartDate(formatter.format(rs.getString("startDate")));
 				employee.setHourlyRate(rs.getFloat("hourlyRate"));
 				employee.setLevel(rs.getString("isManager""));
 				employee.setFirstName(rs.getString("firstName"));
