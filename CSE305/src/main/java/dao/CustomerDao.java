@@ -1,11 +1,14 @@
 package dao;
 
 import java.sql.*;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Customer;
 import model.Location;
+import model.Stock;
 
 import java.util.stream.IntStream;
 
@@ -83,7 +86,31 @@ public class CustomerDao {
 		 * The customer record is required to be encapsulated as a "Customer" class object
 		 */
 		
-		return getDummyCustomer();
+		Customer customer = new Customer();
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT acc.ClientId, c.CreditCardNumber, c.Rating, acc.AccNum, acc.DateOpened FROM Clients c INNER JOIN Account acc ON c.ClientId = acc.ClientId WHERE c.ClientId = \'%" + customerID + "\'%");
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				customer.setClientId(rs.getString("ClientId"));
+				customer.setCreditCard(Integer.toString(rs.getInt("CreditCardNumber")));
+				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
+				customer.setAccountNumber(rs.getInt("AccNum"));
+				customer.setRating(rs.getInt("Rating"));
+			}
+			
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return customer;
+
 	}
 	
 	public String deleteCustomer(String customerID) {
