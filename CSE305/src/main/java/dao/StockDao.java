@@ -134,6 +134,16 @@ public class StockDao {
          * The students code to fetch data from the database will be written here
          * Perform price update of the stock symbol
          */
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("CALL SetSharePrice(" + stockPrice + ", \'%" + stockSymbol + "\'%)");
+
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
 
         return "success";
     }
@@ -160,14 +170,36 @@ public class StockDao {
 
     }
 
-	public List getStocksByCustomer(String customerId) {
+	public List<Stock> getStocksByCustomer(String customerId) {
 
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Get stockHoldings of customer with customerId
 		 */
 
-		return getDummyStocks();
+		List<Stock> result = new ArrayList<Stock>();
+
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE \'%" + customerId + "\'%");
+			
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockSymbol"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setType(rs.getString("Tyoe"));
+				result.add(stock);
+			}
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
 	}
 
     public List<Stock> getStocksByName(String name) {
@@ -177,7 +209,29 @@ public class StockDao {
 		 * Return list of stocks matching "name"
 		 */
 
-        return getDummyStocks();
+    	List<Stock> result = new ArrayList<Stock>();
+
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE CompanyName LIKE \'%" + name + "\'%");
+			
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockSymbol"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setType(rs.getString("Tyoe"));
+				result.add(stock);
+			}
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
     }
 
     public List<Stock> getStockSuggestions(String customerID) {
@@ -198,30 +252,85 @@ public class StockDao {
 		 * Return list of stock objects, showing price history
 		 */
 
-        return getDummyStocks();
+    	List<Stock> result = new ArrayList<Stock>();
+
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM PriceHistory WHERE StockSymbol LIKE \'%" + stockSymbol + "\'%");
+			
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockSymbol"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setType(rs.getString("Type"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				result.add(stock);
+			}
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
     }
 
     public List<String> getStockTypes() {
-
 		/*
 		 * The students code to fetch data from the database will be written here.
 		 * Populate types with stock types
 		 */
 
-        List<String> types = new ArrayList<String>();
-        types.add("technology");
-        types.add("finance");
-        return types;
+        List<String> result = new ArrayList<String>();
 
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT DISTINCT Type FROM Stock");
+			
+			while(rs.next()) {
+				String type = rs.getString("Type");
+				result.add(type);
+			}
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
     }
 
     public List<Stock> getStockByType(String stockType) {
-
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Return list of stocks of type "stockType"
 		 */
 
-        return getDummyStocks();
+    	List<Stock> result = new ArrayList<Stock>();
+
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE Type LIKE \'%" + stockType + "\'%");
+			
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockSymbol"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setType(rs.getString("Tyoe"));
+				result.add(stock);
+			}
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
     }
 }

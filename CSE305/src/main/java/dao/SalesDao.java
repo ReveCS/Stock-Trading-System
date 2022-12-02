@@ -1,5 +1,9 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,8 +37,33 @@ public class SalesDao {
 		 * The students code to fetch data from the database will be written here
 		 * Query to get sales report for a particular month and year
 		 */
-
-        return getDummyRevenueItems();
+    	List<RevenueItem> result = new ArrayList<RevenueItem>();
+  
+    	int monthInt = Integer.parseInt(month);
+    	int yearInt = Integer.parseInt(year);
+    	
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("CALL SalesReport(" + monthInt + ", " + yearInt + ")");
+			
+			while(rs.next()) {
+				RevenueItem item = new RevenueItem();
+				item.setAccountId(Integer.toString(rs.getInt("AccountId")));
+				item.setAmount(rs.getDouble("Total Sale"));
+				item.setDate(rs.getDate("Date"));
+				item.setNumShares(rs.getInt("NumShares"));
+				item.setPricePerShare(rs.getDouble("PricePerShare"));
+				item.setStockSymbol(rs.getString("StockSymbol"));
+				result.add(item);
+			}
+			
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+    	
+        return result;
 
     }
 
