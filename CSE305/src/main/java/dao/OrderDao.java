@@ -94,7 +94,7 @@ public class OrderDao {
 
     public Order getHiddenStopOrder() {
         HiddenStopOrder order = new HiddenStopOrder();
-
+        
         return order;
     }
 
@@ -102,7 +102,6 @@ public class OrderDao {
     
     public List<Order> getOrders() {
         List<Order> orders = new ArrayList<Order>();
-
         
         return orders;
     }
