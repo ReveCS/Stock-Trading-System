@@ -1,6 +1,12 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 import model.Login;
+import model.Stock;
 
 public class LoginDao {
 	/*
@@ -35,6 +41,15 @@ public class LoginDao {
 		 * Return "success" on successful insertion of a new user
 		 * Return "failure" for an unsuccessful database operation
 		 */
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("CALL Add_Login (\'%" + login.getUsername() + "%\', \'% "+ login.getRole() + "%\', \'%" + 0 + "%\'");
+		}catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		/*Sample data begins*/
 		return "success";

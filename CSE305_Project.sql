@@ -28,7 +28,7 @@ CREATE TABLE Person (
 	ON DELETE NO ACTION
 	ON UPDATE CASCADE );
     
-CREATE TABLE login_information(
+CREATE TABLE LoginInfo(
 	Email VARCHAR(32),
     UserPass VARCHAR(255),
     UserRole SMALLINT -- 0 for customer, 1 for empolyee, 2 for manager.
@@ -810,6 +810,24 @@ BEGIN
     INNER JOIN Stock s ON s.StockSymbol = StockId
     GROUP BY StockId ORDER BY COUNT(*) DESC;
 END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE Add_Login(
+	IN UserEmail VARCHAR(255),
+	IN UserPass VARCHAR(255),
+    IN UserRole SMALLINT,
+    )
+BEGIN
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
+	START TRANSACTION;
+	INSERT INTO LoginInfo VALUES (UserEmail, UserPass, UserRole);
+    COMMIT;
+END
 DELIMITER ;
 
 -- SELECT sp.ClientId,
