@@ -67,8 +67,6 @@ public class SalesDao {
 
     }
 
-
-
     public List<RevenueItem> getSummaryListing(String searchKeyword) {
 
 		/*

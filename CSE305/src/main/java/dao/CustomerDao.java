@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Customer;
+import model.Employee;
 import model.Location;
 import model.Stock;
 
@@ -193,7 +194,7 @@ public class CustomerDao {
 		String creditCard = customer.getCreditCard();
 		int rating = customer.getRating();
 		int accountNumber = customer.getAccountNumber();
-		String accountCreationTime = customer.getAccountCreationTime();
+		String accountCreationTime = customer.getAccountCreationTime(); //String -> Date
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
 		String email = customer.getEmail();
@@ -248,6 +249,45 @@ public class CustomerDao {
         /*
 		 * This method fetches returns all customers
 		 */
-        return getDummyCustomerList();
+    	
+    	List<Customer> customers = new ArrayList<Customer>();
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from Clients IN");
+		
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				Customer customer = new Customer();
+				customer.setClientId(rs.getString("ClientId"));
+				customer.setCreditCard(Integer.toString(rs.getInt("CreditCardNumber")));
+				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
+				customer.setAccountNumber(rs.getInt("AccNum"));
+				customer.setRating(rs.getInt("Rating"));
+				/*
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setEmail(rs.getString("Email"));
+				customer.setSsn(rs.getString("Ssn"));
+				customer.setAddress(rs.getString("Address"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				customer.setLocation(location);
+				customer.setTelephone(rs.getString("telephone"));
+				customers.add(customer);
+				*/
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+	
+		return employees;
     }
 }
