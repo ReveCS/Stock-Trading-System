@@ -633,6 +633,41 @@ DELIMITER $$
 
 CALL UpdateCustomer('444444444', 6789234567892345, 2, 'IDK', 'Wah!', 'Hopeless St', 110);
 
+CREATE PROCEDURE CustomerMailingList (
+IN bId INTEGER
+)
+BEGIN
+DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+BEGIN
+ROLLBACK;
+RESIGNAL;
+END;
+   	 
+START TRANSACTION;
+   	 
+SELECT Email From Clients WHERE ClientId IN (SELECT ClientId FROM Trade WHERE BrokerId = bId);
+
+COMMIT;
+END;
+
+CREATE PROCEDURE SuggestStock (
+IN cId INTEGER
+)
+BEGIN
+DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+BEGIN
+ROLLBACK;
+RESIGNAL;
+END;
+   	 
+START TRANSACTION;
+   	 
+SELECT StockSymbol FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
+   	 
+COMMIT;
+END;
+
+
 # CUSTOMER TRANSACTIONS
 
 # Customer's current stock holdings
