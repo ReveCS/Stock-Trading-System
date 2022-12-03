@@ -227,7 +227,7 @@ public class EmployeeDao {
 				employee.setId(rs.getString("employeeID"));
 				employee.setStartDate(formatter.format(rs.getString("startDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("hourlyRate"));
-				employee.setLevel(rs.getString("isManager""));
+				employee.setLevel(rs.getString("isManager"));
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
