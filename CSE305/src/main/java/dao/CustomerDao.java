@@ -3,8 +3,11 @@ package dao;
 import java.sql.*;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import model.Customer;
 import model.Employee;
@@ -193,12 +196,9 @@ public class CustomerDao {
 		String clientId = customer.getClientId();
 		String creditCard = customer.getCreditCard();
 		int rating = customer.getRating();
-		int accountNumber = customer.getAccountNumber();
-		String accountCreationTime = customer.getAccountCreationTime(); //String -> Date
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
 		String email = customer.getEmail();
-		String ssn = customer.getSsn();
 		String address = customer.getAddress();
 		Location location = customer.getLocation();
 		String city = location.getCity();
@@ -210,7 +210,7 @@ public class CustomerDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%" + accountNumber + "\'%, \'%" + accountCreationTime + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%"  + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -230,9 +230,31 @@ public class CustomerDao {
 		 */
 		
 		/*Sample data begins*/
+		String clientId = customer.getClientId();
+		String creditCard = customer.getCreditCard();
+		int rating = customer.getRating();
+		String firstName = customer.getFirstName();
+		String lastName = customer.getLastName();
+		String email = customer.getEmail();
+		String address = customer.getAddress();
+		Location location = customer.getLocation();
+		String city = location.getCity();
+		String state = location.getState();
+		int zipcode = location.getZipCode();
+		String telephone = customer.getTelephone();
+	
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("CALL UpdateCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			
+		}catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
 		return "success";
 		/*Sample data ends*/
-
 	}
 
     public List<Customer> getCustomerMailingList() {
@@ -288,6 +310,6 @@ public class CustomerDao {
 			System.out.println(e);
 		}
 	
-		return employees;
+		return customers;
     }
 }
