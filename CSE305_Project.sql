@@ -3,122 +3,132 @@ CREATE DATABASE stonksmaster;
 
 USE stonksmaster;
 
+DELIMITER $$
+CREATE PROCEDURE create_all_tables ()
+BEGIN
+
 CREATE TABLE Location (
-ZipCode MEDIUMINT,
-City VARCHAR(20) NOT NULL,
-State VARCHAR(20) NOT NULL,
-PRIMARY KEY (ZipCode) );
+	ZipCode MEDIUMINT,
+	City VARCHAR(20) NOT NULL,
+	State VARCHAR(20) NOT NULL,
+	PRIMARY KEY (ZipCode) );
 
 CREATE TABLE Person (
-SSN VARCHAR(20),
-LastName VARCHAR(20) NOT NULL,
-FirstName VARCHAR(20) NOT NULL,
-Email VARCHAR(32),
-Address VARCHAR(20),
-ZipCode MEDIUMINT,
-Telephone VARCHAR(20),
-PRIMARY KEY (SSN),
-FOREIGN KEY (ZipCode) REFERENCES Location (ZipCode)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	SSN VARCHAR(20),
+	LastName VARCHAR(20) NOT NULL,
+	FirstName VARCHAR(20) NOT NULL,
+	Email VARCHAR(32),
+	Address VARCHAR(20),
+	ZipCode MEDIUMINT,
+	Telephone VARCHAR(20),
+	PRIMARY KEY (SSN),
+	FOREIGN KEY (ZipCode) REFERENCES Location (ZipCode)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
 CREATE TABLE Employee (
-EmpId VARCHAR(20),
-StartDate DATE,
-HourlyRate INTEGER,
-EmpRole INT DEFAULT 0,
-PRIMARY KEY (EmpId),
-FOREIGN KEY (EmpId) REFERENCES Person (SSN)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	EmpId VARCHAR(20),
+	StartDate DATE,
+	HourlyRate INTEGER,
+	EmpRole INT DEFAULT 0,
+	PRIMARY KEY (EmpId),
+	FOREIGN KEY (EmpId) REFERENCES Person (SSN)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
 CREATE TABLE Clients (
-ClientId VARCHAR(20),
-CreditCardNumber VARCHAR(32),
-Rating INTEGER,
-PRIMARY KEY (ClientId),
-FOREIGN KEY (ClientId) REFERENCES Person (SSN)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	ClientId VARCHAR(20),
+	CreditCardNumber VARCHAR(32),
+	Rating INTEGER,
+	PRIMARY KEY (ClientId),
+	FOREIGN KEY (ClientId) REFERENCES Person (SSN)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
 CREATE TABLE Stock (
-StockSymbol VARCHAR(20) NOT NULL,
-CompanyName VARCHAR(20) NOT NULL,
-Type VARCHAR(20) NOT NULL,
-PricePerShare DOUBLE,
-NumShares INT NOT NULL DEFAULT 1,
-PRIMARY KEY (StockSymbol) );
+	StockSymbol VARCHAR(20) NOT NULL,
+	CompanyName VARCHAR(20) NOT NULL,
+	Type VARCHAR(20) NOT NULL,
+	PricePerShare DOUBLE,
+	NumShares INT NOT NULL DEFAULT 1,
+	PRIMARY KEY (StockSymbol) );
 
 CREATE TABLE PriceHistory (
-StockSymbol VARCHAR(20) NOT NULL,
-Date DATE,
-PricePerShare DOUBLE,
-CompanyName VARCHAR(20) NOT NULL,
-Type VARCHAR(20) NOT NULL,
-NumShares INT NOT NULL DEFAULT 1,
-PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, Type, NumShares),
-FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
+	StockSymbol VARCHAR(20) NOT NULL,
+	Date DATE,
+	PricePerShare DOUBLE,
+	CompanyName VARCHAR(20) NOT NULL,
+	Type VARCHAR(20) NOT NULL,
+	NumShares INT NOT NULL DEFAULT 1,
+	PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, Type, NumShares),
+	FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
 
 CREATE TABLE Account (
-ClientId VARCHAR(20),
-AccNum INTEGER,	
-DateOpened DATE,
-PRIMARY KEY (ClientId, AccNum),
-FOREIGN KEY (ClientId) REFERENCES Clients (ClientId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	ClientId VARCHAR(20),
+	AccNum INTEGER,	
+	DateOpened DATE,
+	PRIMARY KEY (ClientId, AccNum),
+	FOREIGN KEY (ClientId) REFERENCES Clients (ClientId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
 CREATE TABLE StockPortfolio (
-ClientId VARCHAR(20),
-AccNum INTEGER,
-Stock VARCHAR(20) NOT NULL,
-NumShares INT NOT NULL DEFAULT 1,
-PRIMARY KEY (Stock),
-FOREIGN KEY (Stock)  REFERENCES Stock(StockSymbol),
-FOREIGN KEY (ClientId, AccNum) REFERENCES Account(ClientId, AccNum)
-);
+	ClientId VARCHAR(20),
+	AccNum INTEGER,
+	Stock VARCHAR(20) NOT NULL,
+	NumShares INT NOT NULL DEFAULT 1,
+	PRIMARY KEY (Stock),
+	FOREIGN KEY (Stock)  REFERENCES Stock(StockSymbol),
+	FOREIGN KEY (ClientId, AccNum) REFERENCES Account(ClientId, AccNum) );
 
 CREATE TABLE Transactions (
-TxnId INTEGER NOT NULL AUTO_INCREMENT,
-Fee DECIMAL(13,2),
-Date DATE,
-PricePerShare DOUBLE,
-PRIMARY KEY (TxnId) );
+	TxnId INTEGER NOT NULL AUTO_INCREMENT,
+	Fee DECIMAL(13,2),
+	Date DATE,
+	PricePerShare DOUBLE,
+	PRIMARY KEY (TxnId) );
 
 CREATE TABLE Orders (
-OrderId INTEGER NOT NULL AUTO_INCREMENT,
-NumShares INTEGER,
-PricePerShare DOUBLE,
-Date DATE,
-Percentage DECIMAL(5,3),
-PriceType VARCHAR(13) CHECK ( PriceType IN ('Market', 'MarketOnClose', 'TrailingStop', 'HiddenStop') ),
-OrderType VARCHAR(4) CHECK ( OrderType IN ('Buy', 'Sell') ),
-PRIMARY KEY (OrderId) );
+	OrderId INTEGER NOT NULL AUTO_INCREMENT,
+	NumShares INTEGER,
+	PricePerShare DOUBLE,
+	Date DATE,
+	Percentage DECIMAL(5,3),
+	PriceType VARCHAR(13) CHECK ( PriceType IN ('Market', 'MarketOnClose', 'TrailingStop', 'HiddenStop') ),
+	OrderType VARCHAR(4) CHECK ( OrderType IN ('Buy', 'Sell') ),
+	PRIMARY KEY (OrderId) );
 
 CREATE TABLE Trade (
-AccountId INTEGER,
-ClientId VARCHAR(20),
-BrokerId VARCHAR(20),
-TransactionId INTEGER,
-OrderId INTEGER,
-StockId VARCHAR(20),
-PRIMARY KEY (AccountId, ClientId, BrokerId, TransactionId, OrderId, StockId),
-FOREIGN KEY (ClientId, AccountID) REFERENCES Account (ClientId, AccNum)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (BrokerId) REFERENCES Employee (EmpId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (TransactionID) REFERENCES Transactions (TxnId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (OrderId) REFERENCES Orders (OrderId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (StockId) REFERENCES Stock (StockSymbol)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	AccountId INTEGER,
+	ClientId VARCHAR(20),
+	BrokerId VARCHAR(20),
+	TransactionId INTEGER,
+	OrderId INTEGER,
+	StockId VARCHAR(20),
+	PRIMARY KEY (AccountId, ClientId, BrokerId, TransactionId, OrderId, StockId),
+	FOREIGN KEY (ClientId, AccountID) REFERENCES Account (ClientId, AccNum)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (BrokerId) REFERENCES Employee (EmpId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (TransactionID) REFERENCES Transactions (TxnId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (OrderId) REFERENCES Orders (OrderId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (StockId) REFERENCES Stock (StockSymbol)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
+END$$
+DELIMITER ;
+CALL create_all_tables;
+
+DELIMITER $$
+CREATE PROCEDURE insert_dummy_data ()
+BEGIN
 # INSERT DEMO DATA CODE 
 
 INSERT INTO Location VALUES (11790, 'Stony Brook', 'NY');
@@ -172,6 +182,9 @@ INSERT INTO PriceHistory VALUES ('GM', '2022-10-08', 34.23, 'General Motors', 'a
 INSERT INTO PriceHistory VALUES ('IBM', '2022-11-11', 90.23, 'IBM', 'computer', 500);
 INSERT INTO PriceHistory VALUES ('GM', '2022-12-25', 35.01, 'General Motors', 'automotive', 1000);
 
+END$$
+DELIMITER ;
+CALL insert_dummy_data;
 # MANAGER TRANSACTIONS 
 
 # Set the share price of a stock (for simulating market fluctuations in a stocks share price)
