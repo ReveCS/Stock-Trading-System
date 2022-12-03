@@ -76,7 +76,7 @@ public class StockDao {
     	
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL GetAllStocks()");
 
@@ -110,7 +110,7 @@ public class StockDao {
     	
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE StockSymbol LIKE \'%" + stockSymbol + "%\\");
 
@@ -136,7 +136,7 @@ public class StockDao {
          */
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL SetSharePrice(" + stockPrice + ", \'%" + stockSymbol + "\'%)");
 
@@ -166,7 +166,7 @@ public class StockDao {
 
         try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL Best_Seller()");
 			/*
@@ -211,7 +211,7 @@ public class StockDao {
 
         try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE \'%" + customerId + "\'%");
 			
@@ -243,7 +243,7 @@ public class StockDao {
 
         try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE CompanyName LIKE \'%" + name + "\'%");
 			
@@ -286,7 +286,7 @@ public class StockDao {
 
         try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM PriceHistory WHERE StockSymbol LIKE \'%" + stockSymbol + "\'%");
 			
@@ -317,7 +317,7 @@ public class StockDao {
 
         try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT DISTINCT Type FROM Stock");
 			
@@ -343,7 +343,7 @@ public class StockDao {
 
         try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE Type LIKE \'%" + stockType + "\'%");
 			

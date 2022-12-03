@@ -85,7 +85,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL AddEmployee(\'%" + employeeID + "\'%, \'%" + startDate + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
@@ -126,7 +126,7 @@ public class EmployeeDao {
 	
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
@@ -148,7 +148,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
 		}catch (Exception e) {
@@ -172,7 +172,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee");
 		
@@ -269,7 +269,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee where email like \'%" + username + "%\'");
 		

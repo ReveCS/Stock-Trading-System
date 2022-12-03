@@ -147,7 +147,7 @@ public class CustomerDao {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("delete from Clients where ClientId like \'%" + customerID + "%\'");
 		}catch (Exception e) {
@@ -216,7 +216,7 @@ public class CustomerDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("huh?");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%"  + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
@@ -253,7 +253,7 @@ public class CustomerDao {
 	
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL UpdateCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
@@ -277,7 +277,7 @@ public class CustomerDao {
 
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode");
 			
@@ -318,7 +318,7 @@ public class CustomerDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Clients IN");
 		
