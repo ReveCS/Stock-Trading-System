@@ -205,7 +205,7 @@ public class CustomerDao {
 		int rating = customer.getRating();
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();
-		String email = customer.getEmail();
+		String email = customer.getEmail();	
 		String address = customer.getAddress();
 		Location location = customer.getLocation();
 		String city = location.getCity();
@@ -217,8 +217,22 @@ public class CustomerDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("huh?");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%"  + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			PreparedStatement st = con.prepareStatement("CALL AddCustsomer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			// ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%"  + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			
+			st.setString(1, clientId);
+			st.setString(2, creditCard);
+			st.setInt(3, rating);
+			st.setString(4, lastName);
+			st.setString(5, firstName);
+			st.setString(6, email);
+			st.setString(7, address);
+			st.setInt(8, zipcode);
+			st.setString(9, city);
+			st.setString(9, state);
+			st.setString(10, telephone);
+			
+			ResultSet rs = st.executeQuery();
 			
 		}catch (Exception e) {
 			System.out.println(e);
