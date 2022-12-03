@@ -217,7 +217,7 @@ public class CustomerDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("huh?");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			PreparedStatement st = con.prepareStatement("CALL AddCustsomer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement st = con.prepareStatement("CALL AddCustomer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			// ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%"  + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 			st.setString(1, clientId);
@@ -229,8 +229,8 @@ public class CustomerDao {
 			st.setString(7, address);
 			st.setInt(8, zipcode);
 			st.setString(9, city);
-			st.setString(9, state);
-			st.setString(10, telephone);
+			st.setString(10, state);
+			st.setString(11, telephone);
 			
 			ResultSet rs = st.executeQuery();
 			
