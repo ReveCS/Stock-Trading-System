@@ -228,7 +228,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL AddEmployee('098765432', '2010-09-13', 75, 'rep', 'Sparrow', 'Jack', 'jsparrow@sunsyb.edu', '910-03 Hever Blvd', 10982, 'Big City', 'California', '7186450298');
+CALL AddEmployee('098765432', '2010-09-13', 75, 0, 'Sparrow', 'Jack', 'jsparrow@sunsyb.edu', '910-03 Hever Blvd', 10982, 'Big City', 'California', '7186450298');
 
 DELIMITER $$
 CREATE PROCEDURE UpdateEmployee(
