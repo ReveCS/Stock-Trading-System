@@ -145,9 +145,16 @@ public class CustomerDao {
 		 * customerID, which is the Customer's ID who's details have to be deleted, is given as method parameter
 		 */
 
-		/*Sample data begins*/
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("delete from Clients where ClientId like \'%" + customerID + "%\'");
+		}catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
 		return "success";
-		/*Sample data ends*/
 		
 	}
 
@@ -276,7 +283,7 @@ public class CustomerDao {
 			while(rs.next()) {
 				Customer customer = new Customer();
 				customer.setClientId(rs.getString("ClientId"));
-				customer.setCreditCard(Integer.toString(rs.getInt("CreditCardNumber")));
+				customer.setCreditCard(rs.getString("CreditCardNumber"));
 				customer.setRating(rs.getInt("Rating"));
 				customer.setAccountNumber(rs.getInt("AccNum"));
 				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
@@ -290,7 +297,7 @@ public class CustomerDao {
 				location.setState(rs.getString("State"));
 				location.setZipCode(rs.getInt("ZipCode"));
 				customer.setLocation(location);
-				customer.setTelephone(rs.getString("telephone"));
+				customer.setTelephone(rs.getString("Telephone"));
 				result.add(customer);
 			}
 		}catch (Exception e) {
@@ -314,12 +321,11 @@ public class CustomerDao {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Clients IN");
 		
-
 			/*Sample data begins*/
 			while(rs.next()) {
 				Customer customer = new Customer();
 				customer.setClientId(rs.getString("ClientId"));
-				customer.setCreditCard(Integer.toString(rs.getInt("CreditCardNumber")));
+				customer.setCreditCard(rs.getString("CreditCardNumber"));
 				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
 				customer.setAccountNumber(rs.getInt("AccNum"));
 				customer.setRating(rs.getInt("Rating"));
@@ -333,7 +339,7 @@ public class CustomerDao {
 				location.setState(rs.getString("State"));
 				location.setZipCode(rs.getInt("ZipCode"));
 				customer.setLocation(location);
-				customer.setTelephone(rs.getString("telephone"));
+				customer.setTelephone(rs.getString("Telephone"));
 				customers.add(customer);
 			}
 			/*Sample data ends*/
