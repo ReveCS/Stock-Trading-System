@@ -21,7 +21,7 @@ CREATE TABLE Employee (
 EmpId VARCHAR(20),
 StartDate DATE,
 HourlyRate INTEGER,
-EmpRole VARCHAR(20),
+EmpRole INT DEFAULT 0,
 PRIMARY KEY (EmpId),
 FOREIGN KEY (EmpId) REFERENCES Person (SSN)
 ON DELETE NO ACTION
@@ -56,7 +56,7 @@ FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
 
 CREATE TABLE Account (
 ClientId VARCHAR(20),
-AccNum INTEGER,	
+AccNum INTEGER NOT NULL AUTO_INCREMENT,	
 DateOpened DATE,
 PRIMARY KEY (ClientId, AccNum),
 FOREIGN KEY (ClientId) REFERENCES Clients (ClientId)
@@ -169,7 +169,7 @@ INSERT INTO PriceHistory VALUES ('GM', '2022-12-25', 35.01, 'General Motors', 'a
 
 # MANAGER TRANSACTIONS 
 
-# Set the share price of a stock (for simulating market fluctuations in a stock's share price)
+# Set the share price of a stock (for simulating market fluctuations in a stocks share price)
 DELIMITER $$
 CREATE PROCEDURE SetSharePrice(Price DOUBLE, InputStock VARCHAR(20))
 BEGIN
@@ -536,11 +536,9 @@ CALL RecordOrder(1, 444444444, 123456789, 'GM', 56, NULL, NULL, 'Market', 'Buy')
 # Add, edit, and delete information from customer
 DELIMITER $$
 CREATE PROCEDURE AddCustomer(
-IN ClientId VARCHAR(20),
-IN CreditCardNumber VARCHAR(32),
-IN Rating INTEGER,
-IN AccNum INTEGER,
-IN DateOpened Date,
+IN nClientId VARCHAR(20),
+IN nCreditCardNumber VARCHAR(32),
+IN nRating INTEGER,
 IN nLastName VARCHAR(20),
 IN nFirstName VARCHAR(20),
 IN nEmail VARCHAR(32),
@@ -558,57 +556,65 @@ BEGIN
    	 
 	START TRANSACTION;
     INSERT INTO Location VALUES (nZipCode, nCity, nState);
-	INSERT INTO Person VALUES (ClientId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
-    INSERT INTO Clients VALUES (ClientId, CreditCardNumber, Rating);
-	INSERT INTO Account VALUES (ClientId, AccNum, DateOpened);
+	INSERT INTO Person VALUES (nClientId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
+    INSERT INTO Clients VALUES (nClientId, nCreditCardNumber, nRating);
+	INSERT INTO Account VALUES (nClientId, NULL, NOW());
 	COMMIT;
 END$$
 DELIMITER ;
 
-CALL AddCustomer('666666666', '0129381923831', 2, 1, '2022-12-03', 'Zay', 'Por', 'pzay@cs.sunysb.edu', '039 Bensonhurst', 12031, 'Brooklyn', 'New York', '9173948273');
+CALL AddCustomer('666666666', '0129381923831', 2, 'Zay', 'Por', 'pzay@cs.sunysb.edu', '039 Bensonhurst', 12031, 'Brooklyn', 'New York', '9173948273');
 
 DELIMITER $$
 CREATE PROCEDURE UpdateCustomer(
-IN uid VARCHAR(20),
-IN nEmail VARCHAR(32),
+IN nClientId VARCHAR(20),
 IN nCreditCardNumber VARCHAR(32),
 IN nRating INTEGER,
 IN nLastName VARCHAR(20),
 IN nFirstName VARCHAR(20),
+IN nEmail VARCHAR(32),
 IN nAddress VARCHAR(20),
-IN nTelephone VARCHAR(20)
+IN nZipCode INTEGER,
+IN nCity VARCHAR(20),
+IN nState VARCHAR(20),
+IN nTelephone VARCHAR(20))
 )
 BEGIN
-DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
-BEGIN
-ROLLBACK;
-RESIGNAL;
-END;
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
    	 
-START TRANSACTION;
+	START TRANSACTION;
+    UPDATE Location SET
+		City = nCity,
+        State = nState
+    WHERE ZipCode = nZipCode;
+    
+	UPDATE Person SET
+		LastName=nLastName,
+		FirstName=nFirstName,
+        Email=nEmail,
+		Address=nAddress,
+		Telephone=nTelephone
+	WHERE SSN = nClientId;
    	 
-UPDATE Person SET
-LastName=nLastName,
-FirstName=nFirstName,
-Address=nAddress,
-Telephone=nTelephone
-WHERE SSN = uid;
-   	 
-UPDATE Clients SET
-Email=nEmail,
-CreditCardNumber=nCreditCardNumber,
-Rating=nRating
-WHERE ClientId = uid;
+	UPDATE Clients SET
+		ClientId=nClientId,
+		CreditCardNumber=nCreditCardNumber,
+		Rating=nRating
+	WHERE ClientId = nClientId;
 
-COMMIT;
+	COMMIT;
 END;
 DELIMITER $$
 
-CALL UpdateCustomer('444444444', 'neweremail@new.com', 6789234567892345, 2, 'IDK', 'Wah!', 'Hopeless St', 110);
+CALL UpdateCustomer('444444444', 6789234567892345, 2, 'IDK', 'Wah!', 'Hopeless St', 110);
 
 # CUSTOMER TRANSACTIONS
 
-# Customer's current stock holdings
+# Customers current stock holdings
 DELIMITER $$
 CREATE PROCEDURE CustomerHolding(IN Id VARCHAR(20))
 BEGIN
