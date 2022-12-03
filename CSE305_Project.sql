@@ -50,7 +50,6 @@ CREATE TABLE Clients (
 	Rating INTEGER,
 	PRIMARY KEY (ClientId),
 	FOREIGN KEY (ClientId) REFERENCES Person (SSN)
-	ON DELETE NO ACTION
 	ON UPDATE CASCADE );
 
 CREATE TABLE Stock (
@@ -584,7 +583,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-
 DELIMITER $$
 CREATE PROCEDURE UpdateCustomer(
 	IN nClientId VARCHAR(20),
@@ -630,6 +628,25 @@ BEGIN
 END;
 DELIMITER $$
 
+DELIMITER $$
+CREATE PROCEDURE DeleteCustomer(IN nClientId VARCHAR(20))
+BEGIN
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
+   	 
+	START TRANSACTION;
+	DELETE FROM Person p WHERE p.SSN LIKE nClientId;
+	DELETE FROM Clients c WHERE c.ClientId LIKE nClientId;
+	DELETE FROM Account acc WHERE acc.ClientId LIKE nClientId;
+	COMMIT;
+END$$
+DELIMITER ;
+
+SELECT * From Clients;
+CALL DeleteCustomer('444444444');
 
 CREATE PROCEDURE CustomerMailingList (
 	IN bId INTEGER
@@ -877,6 +894,7 @@ DELIMITER ;
 -- CALL CustomerRepMostRevenue();
 -- CALL CustomerMostRevenue();
 -- CALL RecordOrder(1, 444444444, 123456789, 'GM', 56, NULL, NULL, 'Market', 'Buy');
+
 
 
 
