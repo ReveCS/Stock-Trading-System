@@ -1,124 +1,143 @@
 DROP DATABASE stonksmaster;
 CREATE DATABASE stonksmaster;
-
 USE stonksmaster;
 
+
+DELIMITER $$
+CREATE PROCEDURE create_all_tables ()
+BEGIN
+
+  
+
 CREATE TABLE Location (
-ZipCode MEDIUMINT,
-City VARCHAR(20) NOT NULL,
-State VARCHAR(20) NOT NULL,
-PRIMARY KEY (ZipCode) );
+	ZipCode MEDIUMINT,
+	City VARCHAR(20) NOT NULL,
+	State VARCHAR(20) NOT NULL,
+	PRIMARY KEY (ZipCode) );
 
 CREATE TABLE Person (
-SSN VARCHAR(20),
-LastName VARCHAR(20) NOT NULL,
-FirstName VARCHAR(20) NOT NULL,
-Email VARCHAR(32),
-Address VARCHAR(20),
-ZipCode MEDIUMINT,
-Telephone VARCHAR(20),
-PRIMARY KEY (SSN),
-FOREIGN KEY (ZipCode) REFERENCES Location (ZipCode)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	SSN VARCHAR(20),
+	LastName VARCHAR(20) NOT NULL,
+	FirstName VARCHAR(20) NOT NULL,
+	Email VARCHAR(32) UNIQUE,
+	Address VARCHAR(20),
+	ZipCode MEDIUMINT,
+	Telephone VARCHAR(20),
+	PRIMARY KEY (SSN),
+	FOREIGN KEY (ZipCode) REFERENCES Location (ZipCode)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
+    
+CREATE TABLE login_information(
+	Email VARCHAR(32),
+    UserPass VARCHAR(255),
+    UserRole SMALLINT -- 0 for customer, 1 for empolyee, 2 for manager.
+    );
 
 CREATE TABLE Employee (
-EmpId VARCHAR(20),
-StartDate DATE,
-HourlyRate INTEGER,
-EmpRole INT DEFAULT 0,
-PRIMARY KEY (EmpId),
-FOREIGN KEY (EmpId) REFERENCES Person (SSN)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	EmpId VARCHAR(20),
+	StartDate DATE,
+	HourlyRate INTEGER,
+	EmpRole INT DEFAULT 0,
+	PRIMARY KEY (EmpId),
+	FOREIGN KEY (EmpId) REFERENCES Person (SSN)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
 CREATE TABLE Clients (
-ClientId VARCHAR(20),
-CreditCardNumber VARCHAR(32),
-Rating INTEGER,
-PRIMARY KEY (ClientId),
-FOREIGN KEY (ClientId) REFERENCES Person (SSN)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	ClientId VARCHAR(20),
+	CreditCardNumber VARCHAR(32),
+	Rating INTEGER,
+	PRIMARY KEY (ClientId),
+	FOREIGN KEY (ClientId) REFERENCES Person (SSN)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
 CREATE TABLE Stock (
-StockSymbol VARCHAR(20) NOT NULL,
-CompanyName VARCHAR(20) NOT NULL,
-Type VARCHAR(20) NOT NULL,
-PricePerShare DOUBLE,
-NumShares INT NOT NULL DEFAULT 1,
-PRIMARY KEY (StockSymbol) );
+	StockSymbol VARCHAR(20) NOT NULL,
+	CompanyName VARCHAR(20) NOT NULL,
+	Type VARCHAR(20) NOT NULL,
+	PricePerShare DOUBLE,
+	NumShares INT NOT NULL DEFAULT 1,
+	PRIMARY KEY (StockSymbol) );
 
 CREATE TABLE PriceHistory (
-StockSymbol VARCHAR(20) NOT NULL,
-Date DATE,
-PricePerShare DOUBLE,
-CompanyName VARCHAR(20) NOT NULL,
-Type VARCHAR(20) NOT NULL,
-NumShares INT NOT NULL DEFAULT 1,
-PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, Type, NumShares),
-FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
+	StockSymbol VARCHAR(20) NOT NULL,
+	Date DATE,
+	PricePerShare DOUBLE,
+	CompanyName VARCHAR(20) NOT NULL,
+	Type VARCHAR(20) NOT NULL,
+	NumShares INT NOT NULL DEFAULT 1,
+	PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, Type, NumShares),
+	FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
 
 CREATE TABLE Account (
-ClientId VARCHAR(20),
-AccNum INTEGER,	
-DateOpened DATE,
-PRIMARY KEY (ClientId, AccNum),
-FOREIGN KEY (ClientId) REFERENCES Clients (ClientId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	ClientId VARCHAR(20),
+	AccNum INTEGER,	
+	DateOpened DATE,
+	PRIMARY KEY (ClientId, AccNum),
+	FOREIGN KEY (ClientId) REFERENCES Clients (ClientId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
 CREATE TABLE StockPortfolio (
-ClientId VARCHAR(20),
-AccNum INTEGER,
-Stock VARCHAR(20) NOT NULL,
-NumShares INT NOT NULL DEFAULT 1,
-PRIMARY KEY (Stock),
-FOREIGN KEY (Stock)  REFERENCES Stock(StockSymbol),
-FOREIGN KEY (ClientId, AccNum) REFERENCES Account(ClientId, AccNum)
-);
+	ClientId VARCHAR(20),
+	AccNum INTEGER,
+	Stock VARCHAR(20) NOT NULL,
+	NumShares INT NOT NULL DEFAULT 1,
+	PRIMARY KEY (Stock),
+	FOREIGN KEY (Stock)  REFERENCES Stock(StockSymbol),
+	FOREIGN KEY (ClientId, AccNum) REFERENCES Account(ClientId, AccNum) );
 
 CREATE TABLE Transactions (
-TxnId INTEGER NOT NULL AUTO_INCREMENT,
-Fee DECIMAL(13,2),
-Date DATE,
-PricePerShare DOUBLE,
-PRIMARY KEY (TxnId) );
+	TxnId INTEGER NOT NULL AUTO_INCREMENT,
+	Fee DECIMAL(13,2),
+	Date DATE,
+	PricePerShare DOUBLE,
+	PRIMARY KEY (TxnId) );
 
 CREATE TABLE Orders (
-OrderId INTEGER NOT NULL AUTO_INCREMENT,
-NumShares INTEGER,
-PricePerShare DOUBLE,
-Date DATE,
-Percentage DECIMAL(5,3),
-PriceType VARCHAR(13) CHECK ( PriceType IN ('Market', 'MarketOnClose', 'TrailingStop', 'HiddenStop') ),
-OrderType VARCHAR(4) CHECK ( OrderType IN ('Buy', 'Sell') ),
-PRIMARY KEY (OrderId) );
+	OrderId INTEGER NOT NULL AUTO_INCREMENT,
+	NumShares INTEGER,
+	PricePerShare DOUBLE,
+	Date DATE,
+	Percentage DECIMAL(5,3),
+	PriceType VARCHAR(13) CHECK ( PriceType IN ('Market', 'MarketOnClose', 'TrailingStop', 'HiddenStop') ),
+	OrderType VARCHAR(4) CHECK ( OrderType IN ('Buy', 'Sell') ),
+	PRIMARY KEY (OrderId) );
 
 CREATE TABLE Trade (
-AccountId INTEGER,
-ClientId VARCHAR(20),
-BrokerId VARCHAR(20),
-TransactionId INTEGER,
-OrderId INTEGER,
-StockId VARCHAR(20),
-PRIMARY KEY (AccountId, ClientId, BrokerId, TransactionId, OrderId, StockId),
-FOREIGN KEY (ClientId, AccountID) REFERENCES Account (ClientId, AccNum)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (BrokerId) REFERENCES Employee (EmpId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (TransactionID) REFERENCES Transactions (TxnId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (OrderId) REFERENCES Orders (OrderId)
-ON DELETE NO ACTION
-ON UPDATE CASCADE,
-FOREIGN KEY (StockId) REFERENCES Stock (StockSymbol)
-ON DELETE NO ACTION
-ON UPDATE CASCADE );
+	AccountId INTEGER,
+	ClientId VARCHAR(20),
+	BrokerId VARCHAR(20),
+	TransactionId INTEGER,
+	OrderId INTEGER,
+	StockId VARCHAR(20),
+	PRIMARY KEY (AccountId, ClientId, BrokerId, TransactionId, OrderId, StockId),
+	FOREIGN KEY (ClientId, AccountID) REFERENCES Account (ClientId, AccNum)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (BrokerId) REFERENCES Employee (EmpId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (TransactionID) REFERENCES Transactions (TxnId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (OrderId) REFERENCES Orders (OrderId)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE,
+	FOREIGN KEY (StockId) REFERENCES Stock (StockSymbol)
+	ON DELETE NO ACTION
+	ON UPDATE CASCADE );
 
+END$$
+DELIMITER ;
+CALL create_all_tables;
+
+
+DELIMITER $$
+CREATE PROCEDURE insert_dummy_data ()
+BEGIN
 # INSERT DEMO DATA CODE 
 
 INSERT INTO Location VALUES (11790, 'Stony Brook', 'NY');
@@ -172,8 +191,12 @@ INSERT INTO PriceHistory VALUES ('GM', '2022-10-08', 34.23, 'General Motors', 'a
 INSERT INTO PriceHistory VALUES ('IBM', '2022-11-11', 90.23, 'IBM', 'computer', 500);
 INSERT INTO PriceHistory VALUES ('GM', '2022-12-25', 35.01, 'General Motors', 'automotive', 1000);
 
-# MANAGER TRANSACTIONS 
+END$$
+DELIMITER ;
+CALL insert_dummy_data;
 
+
+# MANAGER TRANSACTIONS 
 # Set the share price of a stock (for simulating market fluctuations in a stocks share price)
 DELIMITER $$
 CREATE PROCEDURE SetSharePrice(Price DOUBLE, InputStock VARCHAR(20))
@@ -198,9 +221,10 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 # Add, Edit and Delete information for an employee
 DELIMITER $$
-	CREATE PROCEDURE AddEmployee(
+CREATE PROCEDURE AddEmployee(
 	IN nId VARCHAR(20),
 	IN nStartDate Date,
 	IN nHourlyRate INTEGER,
@@ -227,8 +251,6 @@ BEGIN
 	COMMIT;
 END$$
 DELIMITER ;
-
-CALL AddEmployee('098765432', '2010-09-13', 75, 0, 'Sparrow', 'Jack', 'jsparrow@sunsyb.edu', '910-03 Hever Blvd', 10982, 'Big City', 'California', '7186450298');
 
 DELIMITER $$
 CREATE PROCEDURE UpdateEmployee(
@@ -274,6 +296,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 # Obtain a sales report for a particular month
 DELIMITER $$
 CREATE PROCEDURE SalesReport (InputMonth INT, InputYear INT)
@@ -294,7 +317,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL SalesReport(11, 2022);
 
 # Produce a comprehensive listing of all stocks
 DELIMITER $$
@@ -306,7 +328,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL StockList();
 
 # Produce a list of orders by stock symbol or by customer name
 DELIMITER $$
@@ -327,7 +348,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL OrderListByStock();
 
 DELIMITER $$
 CREATE PROCEDURE OrderListByCustomer () 
@@ -350,7 +370,6 @@ START TRANSACTION;
 END$$
 DELIMITER ;
 
-CALL OrderListByCustomer();
 
 # Produce a summary listing of revenue generated by a particular stock, stock type, or customer
 # Input: Stock name (i.e IBM)
@@ -373,7 +392,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL StockRevenueSummary('GM');
 
 # Input Stock type (i.e 'computer')
 DELIMITER $$
@@ -393,7 +411,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL StockTypeRevenueSummary('automotive');
 
 # Input Customer ID (i.e 444444444)	
 DELIMITER $$
@@ -412,7 +429,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL CustomerRevenueSummary('444444444');
 
 # Determine which customer representative generated most total revenue
 DELIMITER $$
@@ -432,7 +448,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL CustomerRepMostRevenue();
 
 # Determine which customer generated most total revenue
 DELIMITER $$
@@ -452,7 +467,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL CustomerMostRevenue();
 
 # Produce a list of most actively traded stocks
 DELIMITER $$
@@ -468,7 +482,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL ActiveStockList();
+
 
 # CUSTOMER-REP TRANSACTIONS
 
@@ -539,22 +553,21 @@ BEGIN
 END;
 DELIMITER ;
 
-CALL RecordOrder(1, 444444444, 123456789, 'GM', 56, NULL, NULL, 'Market', 'Buy');
 
 # Add, edit, and delete information from customer
 DELIMITER $$
 CREATE PROCEDURE AddCustomer(
-IN nClientId VARCHAR(20),
-IN nCreditCardNumber VARCHAR(32),
-IN nRating INTEGER,
-IN nLastName VARCHAR(20),
-IN nFirstName VARCHAR(20),
-IN nEmail VARCHAR(32),
-IN nAddress VARCHAR(20),
-IN nZipCode INTEGER,
-IN nCity VARCHAR(20),
-IN nState VARCHAR(20),
-IN nTelephone VARCHAR(20))
+	IN nClientId VARCHAR(20),
+	IN nCreditCardNumber VARCHAR(32),
+	IN nRating INTEGER,
+	IN nLastName VARCHAR(20),
+	IN nFirstName VARCHAR(20),
+	IN nEmail VARCHAR(32),
+	IN nAddress VARCHAR(20),
+	IN nZipCode INTEGER,
+	IN nCity VARCHAR(20),
+	IN nState VARCHAR(20),
+	IN nTelephone VARCHAR(20))
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
 	BEGIN
@@ -571,22 +584,21 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL AddCustomer('666666666', '0129381923831', 2, 'Zay', 'Por', 'pzay@cs.sunysb.edu', '039 Bensonhurst', 12031, 'Brooklyn', 'New York', '9173948273');
 
 DELIMITER $$
 CREATE PROCEDURE UpdateCustomer(
-IN nClientId VARCHAR(20),
-IN nCreditCardNumber VARCHAR(32),
-IN nRating INTEGER,
-IN nLastName VARCHAR(20),
-IN nFirstName VARCHAR(20),
-IN nEmail VARCHAR(32),
-IN nAddress VARCHAR(20),
-IN nZipCode INTEGER,
-IN nCity VARCHAR(20),
-IN nState VARCHAR(20),
-IN nTelephone VARCHAR(20))
-)
+	IN nClientId VARCHAR(20),
+	IN nCreditCardNumber VARCHAR(32),
+	IN nRating INTEGER,
+	IN nLastName VARCHAR(20),
+	IN nFirstName VARCHAR(20),
+	IN nEmail VARCHAR(32),
+	IN nAddress VARCHAR(20),
+	IN nZipCode INTEGER,
+	IN nCity VARCHAR(20),
+	IN nState VARCHAR(20),
+	IN nTelephone VARCHAR(20))
+    )
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
 	BEGIN
@@ -618,42 +630,41 @@ BEGIN
 END;
 DELIMITER $$
 
-CALL UpdateCustomer('444444444', 6789234567892345, 2, 'IDK', 'Wah!', 'Hopeless St', 110);
 
 CREATE PROCEDURE CustomerMailingList (
-IN bId INTEGER
-)
+	IN bId INTEGER
+	)
 BEGIN
-DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
-BEGIN
-ROLLBACK;
-RESIGNAL;
-END;
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
    	 
-START TRANSACTION;
+	START TRANSACTION;
    	 
-SELECT Email From Clients WHERE ClientId IN (SELECT ClientId FROM Trade WHERE BrokerId = bId);
+	SELECT Email From Clients WHERE ClientId IN (SELECT ClientId FROM Trade WHERE BrokerId = bId);
 
-COMMIT;
+	COMMIT;
 END;
 
 SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode
 
 CREATE PROCEDURE SuggestStock (
-IN cId INTEGER
+	IN cId INTEGER
 )
 BEGIN
-DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
-BEGIN
-ROLLBACK;
-RESIGNAL;
-END;
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
    	 
-START TRANSACTION;
-   	 
-SELECT StockSymbol FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
-   	 
-COMMIT;
+	START TRANSACTION;
+		 
+	SELECT StockSymbol FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
+		 
+	COMMIT;
 END;
 
 
@@ -676,7 +687,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL CustomerHolding('444444444');
 
 # The share-price and trailing-stop history for a given conditional order
 DELIMITER $$
@@ -695,25 +705,23 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL trailing_stop_History();
 
 DELIMITER $$
 CREATE PROCEDURE hidden_stop_History() # IN PriceType varchar
 BEGIN
-SELECT o.OrderId,
-o.Date,
-o.NumShares,
-o.PricePerShare,
-o.PriceType,
-o.Percentage,
-o.OrderType
-FROM 
-Orders as o
-    	where O.PriceType = 'HiddenStop';
+	SELECT o.OrderId,
+	o.Date,
+	o.NumShares,
+	o.PricePerShare,
+	o.PriceType,
+	o.Percentage,
+	o.OrderType
+	FROM 
+	Orders as o
+			where O.PriceType = 'HiddenStop';
 END $$
 DELIMITER ;
 
-call trailing_stop_History();
 
 # A history of all current and past orders a customer has placed
 DELIMITER $$
@@ -736,68 +744,65 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL all_History('444444444');
 
 # Stocks available of a particular type and most-recent order info
 DELIMITER $$
 CREATE PROCEDURE searchByType(IN PriceType varchar(20)) 
 BEGIN
-SELECT 
-	o.PriceType,
-	t.StockId,
-	t.OrderId,
-	t.TransactionId,
-	t.ClientId,
-	t.BrokerId,
-	o.NumShares,
-	o.PricePerShare,
-	t2.Fee,
-	o.Date, 
-	o.Percentage,
-	o.OrderType
-FROM trade as t
-INNER JOIN Orders as o On t.OrderId = o.OrderId 
-INNER JOIN Transactions as t2 On t.TransactionId = t2.TxnId 
-WHERE o.PriceTYpe = PriceType
-    order by o.Date desc; 
+	SELECT 
+		o.PriceType,
+		t.StockId,
+		t.OrderId,
+		t.TransactionId,
+		t.ClientId,
+		t.BrokerId,
+		o.NumShares,
+		o.PricePerShare,
+		t2.Fee,
+		o.Date, 
+		o.Percentage,
+		o.OrderType
+	FROM trade as t
+	INNER JOIN Orders as o On t.OrderId = o.OrderId 
+	INNER JOIN Transactions as t2 On t.TransactionId = t2.TxnId 
+	WHERE o.PriceTYpe = PriceType
+		order by o.Date desc; 
 END $$
 DELIMITER ;
 
-CALL searchByType('Market');
 
 # Stocks available with a particular keyword or set of keywords in the stock name, and most-recent order info
 DELIMITER $$
 CREATE PROCEDURE available_keyword(IN keyword varchar(15)) 
 BEGIN
-SELECT t.StockId,
-	t.OrderId,
-    t.TransactionId,
-    t.ClientId,
-    t.BrokerId,
-    o.NumShares,
-	o.PricePerShare,
-    t2.Fee,
-    o.Date,
-    o.Percentage,
-    o.PriceType,
-    o.OrderType
-	FROM trade as t
-    INNER JOIN Orders as o ON t.OrderId = o.OrderId
-    INNER JOIN Transactions as t2 On t.TransactionId = t2.TxnId 
-    WHERE (t.StockId = keyword or t.ClientId = keyword) 
-    or t.BrokerId = keyword 
-    or o.OrderType = keyword
-    or o.PriceTYpe = keyword        
-    order by o.Date desc; 
+	SELECT t.StockId,
+		t.OrderId,
+		t.TransactionId,
+		t.ClientId,
+		t.BrokerId,
+		o.NumShares,
+		o.PricePerShare,
+		t2.Fee,
+		o.Date,
+		o.Percentage,
+		o.PriceType,
+		o.OrderType
+		FROM trade as t
+		INNER JOIN Orders as o ON t.OrderId = o.OrderId
+		INNER JOIN Transactions as t2 On t.TransactionId = t2.TxnId 
+		WHERE (t.StockId = keyword or t.ClientId = keyword) 
+		or t.BrokerId = keyword 
+		or o.OrderType = keyword
+		or o.PriceTYpe = keyword        
+		order by o.Date desc; 
 END $$
 DELIMITER ;
 
-CALL available_keyword('222222222');
 
 # Best-Seller list of stocks
 DELIMITER $$
 CREATE PROCEDURE Best_Seller()
-Begin 
+BEGIN 
     SELECT StockSymbol,
     s.CompanyName,
     s.Type,
@@ -809,33 +814,51 @@ Begin
 END $$
 DELIMITER ;
 
-CALL Best_Seller();
+-- SELECT sp.ClientId,
+-- 		s.*
+-- FROM StockPortfolio sp 
+-- INNER JOIN Stock s ON sp.Stock = s.StockSymbol
+-- WHERE ClientId LIKE '444444444';
 
-SELECT sp.ClientId,
-		s.*
-FROM StockPortfolio sp 
-INNER JOIN Stock s ON sp.Stock = s.StockSymbol
-WHERE ClientId LIKE '444444444';
+-- SELECT acc.ClientId,
+-- c.CreditCardNumber,
+-- c.Rating,
+-- acc.AccNum,
+-- acc.DateOpened
+-- FROM Clients c
+-- INNER JOIN Account acc ON c.ClientId = acc.ClientId
+-- WHERE c.ClientId = '444444444';
 
-SELECT acc.ClientId,
-c.CreditCardNumber,
-c.Rating,
-acc.AccNum,
-acc.DateOpened
-FROM Clients c
-INNER JOIN Account acc ON c.ClientId = acc.ClientId
-WHERE c.ClientId = '444444444';
+-- SELECT c.ClientId, 
+-- p.Email
+-- FROM Clients c
+-- INNER JOIN Person p ON c.ClientId = p.SSN
+-- WHERE p.Email = "pml@cs.sunysb.edu";
 
-SELECT c.ClientId, 
-p.Email
-FROM Clients c
-INNER JOIN Person p ON c.ClientId = p.SSN
-WHERE p.Email = "pml@cs.sunysb.edu";
-
-SELECT * FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId;
+-- SELECT * FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId;
 
 
-
+-- CALL AddEmployee('098765432', '2010-09-13', 75, 0, 'Sparrow', 'Jack', 'jsparrow@sunsyb.edu', '910-03 Hever Blvd', 10982, 'Big City', 'California', '7186450298');
+-- CALL SalesReport(11, 2022);
+-- CALL ActiveStockList();
+-- CALL Best_Seller();
+-- CALL CustomerHolding('444444444');
+-- CALL searchByType('Market');
+-- CALL available_keyword('222222222');
+-- CALL StockList();
+-- CALL OrderListByStock();
+-- CALL all_History('444444444');
+-- call trailing_stop_History();
+-- CALL StockRevenueSummary('GM');
+-- CALL trailing_stop_History();
+-- CALL AddCustomer('666666666', '0129381923831', 2, 'Zay', 'Por', 'pzay@cs.sunysb.edu', '039 Bensonhurst', 12031, 'Brooklyn', 'New York', '9173948273');
+-- CALL UpdateCustomer('444444444', 6789234567892345, 2, 'IDK', 'Wah!', 'Hopeless St', 110);
+-- CALL OrderListByCustomer;
+-- CALL StockTypeRevenueSummary('automotive');
+-- CALL CustomerRevenueSummary('444444444');
+-- CALL CustomerRepMostRevenue();
+-- CALL CustomerMostRevenue();
+-- CALL RecordOrder(1, 444444444, 123456789, 'GM', 56, NULL, NULL, 'Market', 'Buy');
 
 
 
