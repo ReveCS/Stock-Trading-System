@@ -170,6 +170,7 @@ public class StockDao {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("CALL Best_Seller()");
 			/*
+			 
 			 if CALL Best_Seller() doesn't work, copy and paste
 			 
 			 "SELECT StockSymbol, s.CompanyName, s.Type,
