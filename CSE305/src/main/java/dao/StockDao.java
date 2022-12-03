@@ -149,7 +149,7 @@ public class StockDao {
     }
 	
 	public List<Stock> getOverallBestsellers() {
-
+		
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Get list of bestseller stocks
@@ -160,13 +160,43 @@ public class StockDao {
 	}
 
     public List<Stock> getCustomerBestsellers(String customerID) {
+    	
+    	/* student code written within*/
+    	List<Stock> result = new ArrayList<Stock>();
 
-		/*
-		 * The students code to fetch data from the database will be written here.
-		 * Get list of customer bestseller stocks
-		 */
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("CALL Best_Seller()");
+			/*
+			 if CALL Best_Seller() doesn't work, copy and paste
+			 
+			 "SELECT StockSymbol, s.CompanyName, s.Type,
+			 s.PricePerShare, s.NumShares 
+			 FROM Trade     
+			 INNER JOIN Stock s ON s.StockSymbol = StockId
+			 GROUP BY StockId ORDER BY COUNT(*) DESC"
+			 
+			 - Joohan
+			 
+			 */
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockId"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				stock.setType(rs.getString("Type"));
+				
+				result.add(stock);
+			}
 
-        return getDummyStocks();
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
 
     }
 
@@ -191,7 +221,7 @@ public class StockDao {
 				stock.setName(rs.getString("CompanyName"));
 				stock.setNumShares(rs.getInt("NumShares"));
 				stock.setPrice(rs.getDouble("PricePerShare"));
-				stock.setType(rs.getString("Tyoe"));
+				stock.setType(rs.getString("Type"));
 				result.add(stock);
 			}
 
@@ -223,7 +253,7 @@ public class StockDao {
 				stock.setName(rs.getString("CompanyName"));
 				stock.setNumShares(rs.getInt("NumShares"));
 				stock.setPrice(rs.getDouble("PricePerShare"));
-				stock.setType(rs.getString("Tyoe"));
+				stock.setType(rs.getString("Type"));
 				result.add(stock);
 			}
 
@@ -323,7 +353,7 @@ public class StockDao {
 				stock.setName(rs.getString("CompanyName"));
 				stock.setNumShares(rs.getInt("NumShares"));
 				stock.setPrice(rs.getDouble("PricePerShare"));
-				stock.setType(rs.getString("Tyoe"));
+				stock.setType(rs.getString("Type"));
 				result.add(stock);
 			}
 
