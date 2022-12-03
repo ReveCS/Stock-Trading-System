@@ -1,5 +1,5 @@
-DROP DATABASE stonksmaster;
-CREATE DATABASE stonksmaster;
+DROP DATABASE Stonksmaster;
+CREATE DATABASE Stonksmaster;
 USE stonksmaster;
 
 
