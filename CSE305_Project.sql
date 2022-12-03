@@ -753,8 +753,13 @@ CALL available_keyword('222222222');
 DELIMITER $$
 CREATE PROCEDURE Best_Seller()
 Begin 
-    SELECT StockId 
+    SELECT StockSymbol,
+    s.CompanyName,
+    s.Type,
+    s.PricePerShare,
+    s.NumShares
     FROM Trade 
+    INNER JOIN Stock s ON s.StockSymbol = StockId
     GROUP BY StockId ORDER BY COUNT(*) DESC;
 END $$
 DELIMITER ;
