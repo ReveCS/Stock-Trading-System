@@ -190,7 +190,6 @@ public class CustomerDao {
 
 
 	public String addCustomer(Customer customer) {
-
 		/*
 		 * All the values of the add customer form are encapsulated in the customer object.
 		 * These can be accessed by getter methods (see Customer class in model package).
@@ -217,7 +216,7 @@ public class CustomerDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("huh?");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			PreparedStatement st = con.prepareStatement("CALL AddCustsomer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement st = con.prepareStatement("CALL AddCustomer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			// ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%"  + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 			st.setString(1, clientId);

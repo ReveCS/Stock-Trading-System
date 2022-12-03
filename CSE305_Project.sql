@@ -556,7 +556,7 @@ DELIMITER ;
 # Add, edit, and delete information from customer
 DELIMITER $$
 CREATE PROCEDURE AddCustomer(
-	IN nClientId VARCHAR(20),
+	IN SSN VARCHAR(20),
 	IN nCreditCardNumber VARCHAR(32),
 	IN nRating INTEGER,
 	IN nLastName VARCHAR(20),
@@ -576,12 +576,16 @@ BEGIN
    	 
 	START TRANSACTION;
     INSERT INTO Location VALUES (nZipCode, nCity, nState);
-	INSERT INTO Person VALUES (nClientId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
-    INSERT INTO Clients VALUES (nClientId, nCreditCardNumber, nRating);
-	INSERT INTO Account VALUES (nClientId, SUM((SELECT acc.AccNum FROM Account acc WHERE acc.ClientId = n.ClientId)) + 1, NOW());
+	INSERT INTO Person VALUES (SSN, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
+    INSERT INTO Clients VALUES (SSN, nCreditCardNumber, nRating);
+	INSERT INTO Account VALUES (SSN, SUM((SELECT acc.AccNum FROM Account acc WHERE acc.ClientId = n.ClientId)) + 1, NOW());
 	COMMIT;
 END$$
 DELIMITER ;
+
+SELECT * FROM Person;
+CALL AddCustomer('777777777', '0129381923831', 2, 'Zay', 'Por', 'pzay@cs.sunysb.edu', '039 Bensonhurst', 12031, 'Brooklyn', 'New York', '9173948273');
+INSERT INTO Account VALUES ('4123213123', SUM((SELECT acc.AccNum FROM Account acc WHERE acc.ClientId = '444444444')) + 1, NOW());
 
 DELIMITER $$
 CREATE PROCEDURE UpdateCustomer(
@@ -902,6 +906,11 @@ DELIMITER ;
 -- CALL CustomerRepMostRevenue();
 -- CALL CustomerMostRevenue();
 -- CALL RecordOrder(1, 444444444, 123456789, 'GM', 56, NULL, NULL, 'Market', 'Buy');
+
+SELECT * FROM Trade;
+SELECT * FROM Person;
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip';
 
 
 
