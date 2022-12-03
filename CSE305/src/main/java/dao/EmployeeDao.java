@@ -66,11 +66,12 @@ public class EmployeeDao {
 		 * You need to handle the database insertion of the employee details and return "success" or "failure" based on result of the database insertion.
 		 */
 		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
+		
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
-		String startDate = employee.getStartDate();
+		String startDate = employee.getStartDate(); //String -> Date
 		float hourlyRate = employee.getHourlyRate();
-		String level = employee.getLevel();
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
 		String email = employee.getEmail();
@@ -86,7 +87,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL AddEmployee(\'%" + employeeID + "\'%, \'%" + startDate + "\'%, " + hourlyRate + ", \'%" + level + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			ResultSet rs = st.executeQuery("CALL AddEmployee(\'%" + employeeID + "\'%, \'%" + startDate + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -110,9 +111,8 @@ public class EmployeeDao {
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
 		String startDate = employee.getStartDate();
-		LocalDate date = LocalDate.parse(startDate, formatter);
+		LocalDate date = LocalDate.parse(startDate, formatter); //String -> Date
 		float hourlyRate = employee.getHourlyRate();
-		String level = employee.getLevel();
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
 		String email = employee.getEmail();
@@ -128,7 +128,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + level + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -181,9 +181,10 @@ public class EmployeeDao {
 			while(rs.next()) {
 				Employee employee = new Employee();
 				employee.setId(rs.getString("EmpID"));
-				employee.setStartDate(formatter.format(rs.getDate("StartDate")));
+				employee.setStartDate(formatter.format(rs.getDate("StartDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("HourlyRate"));
 				employee.setLevel(rs.getString("isManager"));
+				/*
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
@@ -196,6 +197,7 @@ public class EmployeeDao {
 				employee.setLocation(location);
 				employee.setTelephone(rs.getString("telephone"));
 				employees.add(employee);
+				*/
 			}
 			/*Sample data ends*/
 		}catch (Exception e) {
@@ -225,7 +227,7 @@ public class EmployeeDao {
 			/*Sample data begins*/
 			while(rs.next()) {
 				employee.setId(rs.getString("employeeID"));
-				employee.setStartDate(formatter.format(rs.getString("startDate")));
+				employee.setStartDate(formatter.format(rs.getString("startDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("hourlyRate"));
 				employee.setLevel(rs.getString("isManager""));
 				employee.setFirstName(rs.getString("firstName"));
