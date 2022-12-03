@@ -7,6 +7,8 @@ DELIMITER $$
 CREATE PROCEDURE create_all_tables ()
 BEGIN
 
+  
+
 CREATE TABLE Location (
 	ZipCode MEDIUMINT,
 	City VARCHAR(20) NOT NULL,
@@ -17,7 +19,7 @@ CREATE TABLE Person (
 	SSN VARCHAR(20),
 	LastName VARCHAR(20) NOT NULL,
 	FirstName VARCHAR(20) NOT NULL,
-	Email VARCHAR(32),
+	Email VARCHAR(32) UNIQUE,
 	Address VARCHAR(20),
 	ZipCode MEDIUMINT,
 	Telephone VARCHAR(20),
@@ -25,6 +27,12 @@ CREATE TABLE Person (
 	FOREIGN KEY (ZipCode) REFERENCES Location (ZipCode)
 	ON DELETE NO ACTION
 	ON UPDATE CASCADE );
+    
+CREATE TABLE login_information(
+	Email VARCHAR(32),
+    UserPass VARCHAR(255),
+    UserRole SMALLINT -- 0 for customer, 1 for empolyee, 2 for manager.
+    );
 
 CREATE TABLE Employee (
 	EmpId VARCHAR(20),
