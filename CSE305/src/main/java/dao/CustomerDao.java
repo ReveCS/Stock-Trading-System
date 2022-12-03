@@ -189,8 +189,33 @@ public class CustomerDao {
 		 */
 		
 		/*Sample data begins*/
+		String clientId = customer.getClientId();
+		String creditCard = customer.getCreditCard();
+		int rating = customer.getRating();
+		int accountNumber = customer.getAccountNumber();
+		String accountCreationTime = customer.getAccountCreationTime();
+		String firstName = customer.getFirstName();
+		String lastName = customer.getLastName();
+		String email = customer.getEmail();
+		String ssn = customer.getSsn();
+		String address = customer.getAddress();
+		Location location = customer.getLocation();
+		String city = location.getCity();
+		String state = location.getState();
+		int zipcode = location.getZipCode();
+		String telephone = customer.getTelephone();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%" + accountNumber + "\'%, \'%" + accountCreationTime + "\'%, \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			
+		}catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
 		return "success";
-		/*Sample data ends*/
 
 	}
 
