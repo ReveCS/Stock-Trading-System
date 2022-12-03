@@ -66,7 +66,7 @@ public class CustomerDao {
 		 * Each record is required to be encapsulated as a "Customer" class object and added to the "customers" List
 		 */
 		
-		List<Customer> customers = new ArrayList();
+		List<Customer> customers = new ArrayList<Customer>();
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
@@ -263,8 +263,41 @@ public class CustomerDao {
 		 * This method fetches the all customer mailing details and returns it
 		 * The students code to fetch data from the database will be written here
 		 */
+    	
+    	List<Customer> result = new ArrayList<Customer>();
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        return getDummyCustomerList();
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode");
+			
+			while(rs.next()) {
+				Customer customer = new Customer();
+				customer.setClientId(rs.getString("ClientId"));
+				customer.setCreditCard(Integer.toString(rs.getInt("CreditCardNumber")));
+				customer.setRating(rs.getInt("Rating"));
+				customer.setAccountNumber(rs.getInt("AccNum"));
+				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setEmail(rs.getString("Email"));
+				customer.setSsn(rs.getString("Ssn"));
+				customer.setAddress(rs.getString("Address"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				customer.setLocation(location);
+				customer.setTelephone(rs.getString("telephone"));
+				result.add(customer);
+			}
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+    	
+    	return result;
     }
 
     public List<Customer> getAllCustomers() {
@@ -290,7 +323,6 @@ public class CustomerDao {
 				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
 				customer.setAccountNumber(rs.getInt("AccNum"));
 				customer.setRating(rs.getInt("Rating"));
-				/*
 				customer.setFirstName(rs.getString("FirstName"));
 				customer.setLastName(rs.getString("LastName"));
 				customer.setEmail(rs.getString("Email"));
@@ -303,7 +335,6 @@ public class CustomerDao {
 				customer.setLocation(location);
 				customer.setTelephone(rs.getString("telephone"));
 				customers.add(customer);
-				*/
 			}
 			/*Sample data ends*/
 		}catch (Exception e) {
