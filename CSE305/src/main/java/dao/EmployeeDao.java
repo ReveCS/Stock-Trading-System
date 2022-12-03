@@ -218,7 +218,7 @@ public class EmployeeDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmater", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmater", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
 
