@@ -10,7 +10,7 @@ LastName VARCHAR(20) NOT NULL,
 FirstName VARCHAR(20) NOT NULL,
 Email VARCHAR(32),
 Address VARCHAR(20),
-ZipCode INT,
+ZipCode MEDIUMINT,
 Telephone VARCHAR(20),
 PRIMARY KEY (SSN),
 FOREIGN KEY (ZipCode) REFERENCES Location (ZipCode)
@@ -56,7 +56,7 @@ FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
 
 CREATE TABLE Account (
 ClientId VARCHAR(20),
-AccNum INTEGER NOT NULL AUTO_INCREMENT,	
+AccNum INTEGER,	
 DateOpened DATE,
 PRIMARY KEY (ClientId, AccNum),
 FOREIGN KEY (ClientId) REFERENCES Clients (ClientId)
@@ -127,8 +127,8 @@ INSERT INTO Person VALUES ('444444444', 'Philip', 'Lewis', 'pml@cs.sunysb.edu', 
 INSERT INTO Person VALUES ('123456789', 'Smith', 'David', 'dsmith@cs.sunysb.edu', '123 College road', 11790, '5162152345');
 INSERT INTO Person VALUES ('789123456', 'Warren', 'David', 'dwarren@cs.sunysb.edu', '456 Sunken Street', 11790, '5162152345');
 
-INSERT INTO Employee VALUES ('123456789', '2005-11-01', 60, 'rep');
-INSERT INTO Employee VALUES ('789123456', '2005-11-01', 50, 'manager');
+INSERT INTO Employee VALUES ('123456789', '2005-11-01', 60, 0);
+INSERT INTO Employee VALUES ('789123456', '2005-11-01', 50, 1);
 
 INSERT INTO Stock VALUES ('GM',	'General Motors', 'automotive', 34.23, 1000);
 INSERT INTO Stock VALUES ('IBM', 'IBM', 'computer', 91.41, 500);
@@ -558,7 +558,7 @@ BEGIN
     INSERT INTO Location VALUES (nZipCode, nCity, nState);
 	INSERT INTO Person VALUES (nClientId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
     INSERT INTO Clients VALUES (nClientId, nCreditCardNumber, nRating);
-	INSERT INTO Account VALUES (nClientId, NULL, NOW());
+	INSERT INTO Account VALUES (nClientId, SUM((SELECT acc.AccNum FROM Account acc WHERE acc.ClientId = n.ClientId)) + 1, NOW());
 	COMMIT;
 END$$
 DELIMITER ;
@@ -614,7 +614,7 @@ CALL UpdateCustomer('444444444', 6789234567892345, 2, 'IDK', 'Wah!', 'Hopeless S
 
 # CUSTOMER TRANSACTIONS
 
-# Customers current stock holdings
+# Customer's current stock holdings
 DELIMITER $$
 CREATE PROCEDURE CustomerHolding(IN Id VARCHAR(20))
 BEGIN
@@ -782,6 +782,7 @@ FROM Clients c
 INNER JOIN Person p ON c.ClientId = p.SSN
 WHERE p.Email = "pml@cs.sunysb.edu";
 
-SELECT * FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId
+SELECT * FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId;
+
 
 
