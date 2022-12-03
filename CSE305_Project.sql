@@ -178,6 +178,12 @@ INSERT INTO PriceHistory VALUES ('GM', '2022-12-25', 35.01, 'General Motors', 'a
 DELIMITER $$
 CREATE PROCEDURE SetSharePrice(Price DOUBLE, InputStock VARCHAR(20))
 BEGIN
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
+
 	# Update SharePrice in SharePrice history table
     START TRANSACTION;
 	INSERT INTO PriceHistory (StockSymbol, Date, PricePerShare) VALUES
@@ -194,19 +200,19 @@ DELIMITER ;
 
 # Add, Edit and Delete information for an employee
 DELIMITER $$
-CREATE PROCEDURE AddEmployee(
-IN nId VARCHAR(20),
-IN nStartDate Date,
-IN nHourlyRate INTEGER,
-IN nRole VARCHAR(20),
-IN nLastName VARCHAR(20),
-IN nFirstName VARCHAR(20),
-IN nEmail VARCHAR(32),
-IN nAddress VARCHAR(20),
-IN nZipCode INT,
-IN nCity VARCHAR(20),
-IN nState VARCHAR(20),
-IN nTelephone VARCHAR(20))
+	CREATE PROCEDURE AddEmployee(
+	IN nId VARCHAR(20),
+	IN nStartDate Date,
+	IN nHourlyRate INTEGER,
+	IN nRole VARCHAR(20),
+	IN nLastName VARCHAR(20),
+	IN nFirstName VARCHAR(20),
+	IN nEmail VARCHAR(32),
+	IN nAddress VARCHAR(20),
+	IN nZipCode INT,
+	IN nCity VARCHAR(20),
+	IN nState VARCHAR(20),
+	IN nTelephone VARCHAR(20))
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
 	BEGIN
@@ -226,18 +232,18 @@ CALL AddEmployee('098765432', '2010-09-13', 75, 0, 'Sparrow', 'Jack', 'jsparrow@
 
 DELIMITER $$
 CREATE PROCEDURE UpdateEmployee(
-IN nId VARCHAR(20),
-IN nStartDate Date,
-IN nHourlyRate INTEGER,
-IN nRole VARCHAR(20),
-IN nLastName VARCHAR(20),
-IN nFirstName VARCHAR(20),
-IN nEmail VARCHAR(32),
-IN nAddress VARCHAR(20),
-IN nZipCode VARCHAR(20),
-IN nCity VARCHAR(20),
-IN nState VARCHAR(20),
-IN nTelephone VARCHAR(20))
+	IN nId VARCHAR(20),
+	IN nStartDate Date,
+	IN nHourlyRate INTEGER,
+	IN nRole VARCHAR(20),
+	IN nLastName VARCHAR(20),
+	IN nFirstName VARCHAR(20),
+	IN nEmail VARCHAR(32),
+	IN nAddress VARCHAR(20),
+	IN nZipCode VARCHAR(20),
+	IN nCity VARCHAR(20),
+	IN nState VARCHAR(20),
+	IN nTelephone VARCHAR(20))
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
 	BEGIN
@@ -469,15 +475,15 @@ CALL ActiveStockList();
 # Record an order
 DELIMITER $$
 CREATE PROCEDURE RecordOrders(
-IN AccId INTEGER,
-IN ClientId INTEGER,
-IN BrokerId INTEGER,
-IN StockSym VARCHAR(20),
-IN NumShares INTEGER,
-IN PricePerShare DECIMAL(13,2),
-IN Percentage DECIMAL(5,2),
-IN PriceType VARCHAR(13),
-IN OrderType VARCHAR(4)
+	IN AccId INTEGER,
+	IN ClientId INTEGER,
+	IN BrokerId INTEGER,
+	IN StockSym VARCHAR(20),
+	IN NumShares INTEGER,
+	IN PricePerShare DECIMAL(13,2),
+	IN Percentage DECIMAL(5,2),
+	IN PriceType VARCHAR(13),
+	IN OrderType VARCHAR(4)
 )
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
@@ -486,47 +492,44 @@ BEGIN
 		RESIGNAL;
 	END;
    		 
-START TRANSACTION;
+	START TRANSACTION;
 
-
-IF PriceType='Market' THEN
-INSERT INTO Orders VALUES (
-	NULL,
-NumShares,
-(SELECT PricePerShare FROM Stock WHERE StockSymbol=StockSym),
-NOW(),
-Percentage,
-PriceType,
-OrderType
-);
-ELSE
-INSERT INTO Orders VALUES (
-NULL,
-NumShares,
-PricePerShare,
-NOW(),
-Percentage,
-PriceType,
-OrderType
-);
-END IF;
+	IF PriceType='Market' THEN
+		INSERT INTO Orders VALUES (
+			NULL,
+			NumShares,
+			(SELECT PricePerShare FROM Stock WHERE StockSymbol=StockSym),
+			NOW(),
+			Percentage,
+			PriceType,
+			OrderType
+			);
+	ELSE
+		INSERT INTO Orders VALUES (
+			NULL,
+			NumShares,
+			PricePerShare,
+			NOW(),
+			Percentage,
+			PriceType,
+			OrderType
+		);
+	END IF;
 
 	SET @order_id = (SELECT LAST_INSERT_ID());
 	
 	IF PriceType='Market' THEN
-INSERT INTO Transactions VALUES (
-NULL,
-(SELECT NumShares*PricePerShare*0.05 AS Fee FROM Orders WHERE OrderId=@order_id),
-NOW(),
-(SELECT PricePerShare FROM Orders WHERE OrderId=@order_id)
-);
-ELSE
-INSERT INTO Transaction VALUES (NULL,NULL,NULL,NULL);
-END IF;
-END;
+		INSERT INTO Transactions VALUES (
+			NULL,
+			(SELECT NumShares*PricePerShare*0.05 AS Fee FROM Orders WHERE OrderId=@order_id),
+			NOW(),
+			(SELECT PricePerShare FROM Orders WHERE OrderId=@order_id)
+			);
+	ELSE
+		INSERT INTO Transaction VALUES (NULL,NULL,NULL,NULL);
+	END IF;
 
-
-SET @transaction_id = (SELECT LAST_INSERT_ID());
+	SET @transaction_id = (SELECT LAST_INSERT_ID());
 
 	INSERT INTO Trade VALUES (
 		AccId,	ClientId, BrokerId, @transaction_id, @order_id, StockSym
