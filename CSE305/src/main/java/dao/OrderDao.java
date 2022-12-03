@@ -94,7 +94,7 @@ public class OrderDao {
 
     public Order getHiddenStopOrder() {
         HiddenStopOrder order = new HiddenStopOrder();
-
+        
         return order;
     }
 
@@ -102,7 +102,6 @@ public class OrderDao {
     
     public List<Order> getOrders() {
         List<Order> orders = new ArrayList<Order>();
-
         
         return orders;
     }
@@ -125,31 +124,57 @@ public class OrderDao {
 		 * Student code to get orders by stock symbol
          */
     	
+    	List<Order> result = new ArrayList<Order>();
+    	
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Employee");
-		
+			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId WHERE t.StockId = 'IBM'");
 
 			/*Sample data begins*/
 			while(rs.next()) {
-			
+				Order order = new Order();
+				order.setDatetime(rs.getDate("Date"));
+				order.setId(rs.getInt("OrderId"));
+				order.setNumShares(rs.getInt("NumShares"));
+				result.add(order);
 			}
 			/*Sample data ends*/
 		}catch (Exception e) {
 			System.out.println(e);
 		}
     	
-    	
-        return getDummyOrders();
+        return result;
     }
 
     public List<Order> getOrderByCustomerName(String customerName) {
          /*
 		 * Student code to get orders by customer name
          */
-        return getDummyOrders();
+    	
+    	List<Order> result = new ArrayList<Order>();
+    	
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				Order order = new Order();
+				order.setDatetime(rs.getDate("Date"));
+				order.setId(rs.getInt("OrderId"));
+				order.setNumShares(rs.getInt("NumShares"));
+				result.add(order);
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+    	
+        return result;
     }
 
     public List<Order> getOrderHistory(String customerId) {
