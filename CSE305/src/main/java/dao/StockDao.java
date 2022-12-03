@@ -178,6 +178,8 @@ public class StockDao {
 			 INNER JOIN Stock s ON s.StockSymbol = StockId
 			 GROUP BY StockId ORDER BY COUNT(*) DESC"
 			 
+			 - Joohan
+			 
 			 */
 			while(rs.next()) {
 				Stock stock = new Stock();
