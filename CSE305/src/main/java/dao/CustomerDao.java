@@ -201,6 +201,7 @@ public class CustomerDao {
 		
 		/*Sample data begins*/
 		String clientId = customer.getClientId();
+		clientId = "Information";
 		String creditCard = customer.getCreditCard();
 		int rating = customer.getRating();
 		String firstName = customer.getFirstName();
@@ -218,7 +219,6 @@ public class CustomerDao {
 			System.out.println("huh?");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			PreparedStatement st = con.prepareStatement("CALL AddCustomer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			// ResultSet rs = st.executeQuery("CALL AddCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%"  + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			
 			st.setString(1, clientId);
 			st.setString(2, creditCard);

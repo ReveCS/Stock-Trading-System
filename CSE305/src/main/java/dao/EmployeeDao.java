@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.Format;
@@ -86,9 +87,22 @@ public class EmployeeDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL AddEmployee(\'%" + employeeID + "\'%, \'%" + startDate + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+
+			PreparedStatement st = con.prepareStatement("CALL AddEmployee(?, ?, ?);");
+			st.setString(1, employeeID);
+			st.setString(2, startDate);
+			st.setFloat(3, hourlyRate);
+			st.setString(4,  lastName);
+			st.setString(5, firstName);
+			st.setString(6, email);
+			st.setString(7, address);
+			st.setInt(8, zipcode);
+			st.setString(9, city);
+			st.setString(10, state);
+			st.setString(11, telephone);
 			
+			ResultSet rs = st.executeQuery();
+
 		}catch (Exception e) {
 			System.out.println(e);
 			return "failure";

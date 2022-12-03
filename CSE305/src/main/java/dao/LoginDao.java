@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -45,8 +46,13 @@ public class LoginDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL Add_Login (\'%" + login.getUsername() + "%\', \'% "+ login.getRole() + "%\', \'%" + 0 + "%\'");
+			PreparedStatement st = con.prepareStatement("CALL Add_Login(?, ?, ?)");
+			
+			st.setString(1, login.getUsername());
+			st.setString(2, login.getRole());
+			st.setInt(3, 0);
+			
+			ResultSet rs = st.executeQuery();
 		}catch (Exception e) {
 			System.out.println(e);
 		}
