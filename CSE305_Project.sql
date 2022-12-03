@@ -1,3 +1,8 @@
+DROP DATABASE stonksmaster;
+CREATE DATABASE stonksmaster;
+
+USE stonksmaster;
+
 CREATE TABLE Location (
 ZipCode MEDIUMINT,
 City VARCHAR(20) NOT NULL,
