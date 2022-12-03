@@ -57,13 +57,33 @@ public class CustomerDao {
 		 * This method fetches one or more customers based on the searchKeyword and returns it as an ArrayList
 		 */
 		
-
 		/*
 		 * The students code to fetch data from the database based on searchKeyword will be written here
 		 * Each record is required to be encapsulated as a "Customer" class object and added to the "customers" List
 		 */
 		
-		return getDummyCustomerList();
+		List<Customer> customers = new ArrayList();
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT ");
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				Customer customer = new Customer();
+				
+				customers.add();
+			}
+			
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return customers;
 	}
 
 
@@ -135,8 +155,26 @@ public class CustomerDao {
 		 * username, which is the email address of the customer, who's ID has to be returned, is given as method parameter
 		 * The Customer's ID is required to be returned as a String
 		 */
+		
+		String result = "";
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT c.ClientId, p.Email FROM Clients c INNER JOIN Person p ON c.ClientId = p.SSN WHERE p.Email = \'%" + email + "\'%");
 
-		return "111-11-1111";
+			/*Sample data begins*/
+			while(rs.next()) {
+				result = rs.getString("Email");
+			}
+			
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return result;
 	}
 
 
