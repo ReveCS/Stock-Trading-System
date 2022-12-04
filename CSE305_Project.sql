@@ -36,7 +36,7 @@ CREATE TABLE Employee (
 	EmpId VARCHAR(20),
 	StartDate DATE,
 	HourlyRate INTEGER,
-	EmpRole INT DEFAULT 0,
+	EmpRole INT NOT NUll DEFAULT 0,
 	PRIMARY KEY (EmpId),
 	FOREIGN KEY (EmpId) REFERENCES Person (SSN)
 	ON DELETE NO ACTION
@@ -210,7 +210,7 @@ BEGIN
     ((SELECT StockSymbol FROM Stock WHERE StockSymbol = InputStock), 
     NOW(), 
     (SELECT PricePerShare FROM Stock WHERE StockSymbol = InputStock),
-    (SELECT CompanyName FROM Stock WHERE StockSymbol = InputStock),
+    (SELECT CompanyName FROM Stock WHERE StockSymbol = InputStock)
     );
 	
     UPDATE Stock 
@@ -227,7 +227,6 @@ CREATE PROCEDURE AddEmployee(
 	IN nId VARCHAR(20),
 	IN nStartDate Date,
 	IN nHourlyRate INTEGER,
-	IN nRole VARCHAR(20),
 	IN nLastName VARCHAR(20),
 	IN nFirstName VARCHAR(20),
 	IN nEmail VARCHAR(32),
@@ -246,7 +245,7 @@ BEGIN
 	START TRANSACTION;
     INSERT INTO Location VALUES (nZipCode, nCity, nState);
 	INSERT INTO Person VALUES (nId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
-    INSERT INTO Employee VALUES (nId, nStartDate, nHourlyRate, nRole);
+    INSERT INTO Employee VALUES (nId, nStartDate, nHourlyRate, NULL);
 	COMMIT;
 END$$
 DELIMITER ;
@@ -863,4 +862,7 @@ DELIMITER ;
 
 CALL SetSharePrice(1000, 'F');
 SELECT * FROM Stock;
+SELECT * FROM PriceHistory;
+SELECT * FROM Clients;
+SELECT * FROM Employee;
 
