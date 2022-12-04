@@ -909,5 +909,5 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip';
 
 
-
+SELECT * FROM Stock;
 

@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class StockDao {
     	
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT t.StockId AS 'Most Actively Traded Stocks', COUNT(*) AS Trades FROM Trade AS t GROUP BY StockId ORDER BY Trades DESC;");
 
@@ -111,9 +112,14 @@ public class StockDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE StockSymbol LIKE \'%" + stockSymbol + "%\\");
-
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE StockSymbol LIKE \'%" + stockSymbol + "%\\");
+			PreparedStatement st = con.prepareStatement("SELECT * FROM Stock WHERE StockSymbol LIKE ?");
+			
+			st.setString(1, stockSymbol);
+			
+			ResultSet rs = st.executeQuery();
+			
 			/*Sample data begins*/
 		    result.setSymbol(rs.getString("StockSymbol"));
 		    result.setName(rs.getString("CompanyName"));
@@ -137,12 +143,18 @@ public class StockDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL SetSharePrice(" + stockPrice + ", \'%" + stockSymbol + "\'%)");
+			//ResultSet rs = st.executeQuery("CALL SetSharePrice(" + stockPrice + ", \'%" + stockSymbol + "\'%)");
+			PreparedStatement st = con.prepareStatement("CALL SetSharePrice(?, ?)");
+			
+			st.setDouble(1, stockPrice);
+			st.setString(2, stockSymbol);
+
+			ResultSet rs = st.executeQuery();
 
 			/*Sample data ends*/
 		}catch (Exception e) {
 			System.out.println(e);
+			return "failure";
 		}
 
         return "success";
@@ -213,8 +225,11 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE \'%" + customerId + "\'%");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE \'%" + customerId + "\'%");
+			PreparedStatement st = con.prepareStatement("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE ?");
+			st.setString(1, customerId);
+			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
 				Stock stock = new Stock();
@@ -245,8 +260,11 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE CompanyName LIKE \'%" + name + "\'%");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE CompanyName LIKE \'%" + name + "\'%");
+			PreparedStatement st = con.prepareStatement("SELECT * FROM Stock WHERE CompanyName LIKE ?");
+			st.setString(1, name);
+			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
 				Stock stock = new Stock();
@@ -288,8 +306,11 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM PriceHistory WHERE StockSymbol LIKE \'%" + stockSymbol + "\'%");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT * FROM PriceHistory WHERE StockSymbol LIKE \'%" + stockSymbol + "\'%");
+			PreparedStatement st = con.prepareStatement("SELECT * FROM PriceHistory WHERE StockSymbol LIKE ?");
+			st.setString(1, stockSymbol);
+			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
 				Stock stock = new Stock();
@@ -345,8 +366,11 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE Type LIKE \'%" + stockType + "\'%");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT * FROM Stock WHERE Type LIKE \'%" + stockType + "\'%");
+			PreparedStatement st = con.prepareStatement("SELECT * FROM Stock WHERE Type LIKE ?");
+			st.setString(1, stockType);
+			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
 				Stock stock = new Stock();

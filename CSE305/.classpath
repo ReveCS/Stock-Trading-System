@@ -34,7 +34,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/yu/eclipse-workspace/CSE305_FinalProject/CSE305/apache-tomcat-9.0.69/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="/home/yu/eclipse-workspace/CSE305_FinalProject/CSE305/lib/mysql-connector-j-8.0.31.jar"/>
+	<classpathentry kind="lib" path="C:/Users/avery/eclipse-workspace/CSE305_FinalProject/CSE305/apache-tomcat-9.0.69/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/avery/eclipse-workspace/CSE305_FinalProject/CSE305/lib/mysql-connector-j-8.0.31.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
