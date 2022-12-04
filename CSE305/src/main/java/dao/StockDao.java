@@ -309,17 +309,16 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("SELECT * FROM PriceHistory WHERE StockSymbol LIKE \'%" + stockSymbol + "\'%");
 			PreparedStatement st = con.prepareStatement("SELECT * FROM PriceHistory WHERE StockSymbol LIKE ?");
 			st.setString(1, stockSymbol);
 			ResultSet rs = st.executeQuery();
+			
 			
 			while(rs.next()) {
 				Stock stock = new Stock();
 				stock.setSymbol(rs.getString("StockSymbol"));
 				stock.setName(rs.getString("CompanyName"));
-				stock.setType(rs.getString("Type"));
+				stock.setType(rs.getString("StockType"));
 				stock.setPrice(rs.getDouble("PricePerShare"));
 				stock.setNumShares(rs.getInt("NumShares"));
 				result.add(stock);
