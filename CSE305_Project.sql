@@ -162,6 +162,8 @@ INSERT INTO Clients VALUES ('444444444', '6789234567892345', 1);
 
 INSERT INTO Account VALUES ('444444444', 1, '2006-10-01');
 INSERT INTO Account VALUES ('222222222', 1, '2006-10-15');
+INSERT INTO Account VALUES ('111111111', 1, '2006-10-15');
+INSERT INTO Account VALUES ('333333333', 1, '2006-10-15');
 
 INSERT INTO StockPortfolio VALUES ('444444444', 1, 'F', 100);
 INSERT INTO StockPortfolio VALUES ('222222222', 1, 'IBM', 50);
@@ -247,7 +249,7 @@ BEGIN
 	START TRANSACTION;
     INSERT INTO Location VALUES (nZipCode, nCity, nState);
 	INSERT INTO Person VALUES (nId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
-    INSERT INTO Employee VALUES (nId, nStartDate, nHourlyRate, NULL);
+    INSERT INTO Employee VALUES (nId, nStartDate, nHourlyRate, DEFAULT);
 	COMMIT;
 END$$
 DELIMITER ;
@@ -547,10 +549,10 @@ BEGIN
 
 	INSERT INTO Trade VALUES (
 		AccId,	ClientId, BrokerId, @transaction_id, @order_id, StockSym
-	)
+	);
 
 	COMMIT;
-END;
+END$$
 DELIMITER ;
 
 
@@ -585,7 +587,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-SELECT * FROM Person;
 
 DELIMITER $$
 CREATE PROCEDURE UpdateCustomer(
@@ -599,7 +600,7 @@ CREATE PROCEDURE UpdateCustomer(
 	IN nZipCode INTEGER,
 	IN nCity VARCHAR(20),
 	IN nState VARCHAR(20),
-	IN nTelephone VARCHAR(20))
+	IN nTelephone VARCHAR(20)
     )
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
@@ -629,8 +630,9 @@ BEGIN
 	WHERE ClientId = nClientId;
 
 	COMMIT;
-END;
-DELIMITER $$
+END $$
+DELIMITER ;
+
 
 DELIMITER $$
 CREATE PROCEDURE DeleteCustomer(IN nClientId VARCHAR(20))
@@ -649,7 +651,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-SELECT * From Clients;
 
 DELIMITER $$
 CREATE PROCEDURE CustomerMailingList (
@@ -667,26 +668,8 @@ BEGIN
 	SELECT Email From Clients WHERE ClientId IN (SELECT ClientId FROM Trade WHERE BrokerId = bId);
 
 	COMMIT;
-END;
-
-SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode
-
-CREATE PROCEDURE SuggestStock (
-	IN cId INTEGER
-)
-BEGIN
-	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
-	BEGIN
-		ROLLBACK;
-		RESIGNAL;
-	END;
-   	 
-	START TRANSACTION;
-		 
-	SELECT StockSymbol FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
-		 
-	COMMIT;
-END;
+END$$
+DELIMITER ;
 
 
 # CUSTOMER TRANSACTIONS
@@ -890,8 +873,21 @@ END $$
 DELIMITER ;
 
 
-CALL SetSharePrice(1000, 'F');
+CALL SetSharePrice(123, 'F');
 SELECT * FROM Stock;
 SELECT * FROM PriceHistory;
 SELECT * FROM Clients;
 SELECT * FROM Employee;
+SELECT * FROM Person;
+SELECT * FROM Trade;
+SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode;
+
+
+DELIMITER $$
+CREATE PROCEDURE SuggestStock (
+	IN cId VARCHAR(20)
+)
+BEGIN
+	SELECT StockSymbol FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
+END$$
+DELIMITER ;
