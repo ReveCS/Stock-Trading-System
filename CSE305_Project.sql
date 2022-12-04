@@ -871,6 +871,8 @@ BEGIN
 	ELSE
 		INSERT INTO Orders VALUES (NULL, NumShares, PricePerShare, Date, Percentage, PriceType, OrderType);
 	END IF;
+
+	SET @order_id = (SELECT LAST_INSERT_ID());
     
     IF PriceType='Market' THEN
 		INSERT INTO Transactions VALUES (
@@ -885,11 +887,13 @@ BEGIN
     
 	SET @transaction_id = (SELECT LAST_INSERT_ID());
 
-	INSERT INTO Trade VALUES (AccountNum, ClientId, BrokerId, @transaction_id, OrderId, StockSymbol);
+	INSERT INTO Trade VALUES (AccountNum, ClientId, BrokerId, @transaction_id, @order_id, StockSymbol);
     
     COMMIT;
 END $$
 DELIMITER ;
+
+CALL SubmitOrder(50, 100, "2022-12-03", 0, "Market", "Buy", 1, "444444444", "123456789", "IBM");
 
 
 CALL SetSharePrice(123, 'F');
