@@ -181,7 +181,7 @@ public class CustomerDao {
 			
 			/*Sample data begins*/
 			while(rs.next()) {
-				result = rs.getString("Email");
+				result = rs.getString("ClientId");
 			}
 			
 			/*Sample data ends*/
