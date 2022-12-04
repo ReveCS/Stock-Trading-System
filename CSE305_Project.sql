@@ -859,6 +859,32 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE SubmitOrder(
+	IN OrderId INT,
+    IN DateTime Date,
+    IN NumShares INT,
+	IN BrokerId VARCHAR(20),
+    IN ClientId VARCHAR(20),
+    IN AccountNum INT,
+    IN StockSymbol VARCHAR(20),
+    IN StockPrice DOUBLE
+    )
+
+BEGIN
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
+    
+	START TRANSACTION;
+    INSERT INTO Orders VALUES (OrderId, NumShares, StockPrice, DateTime, null, null, null);
+	INSERT INTO Trade VALUES (AccountNum, ClientId, BrokerId, null, OrderId, StockSymbol);
+    COMMIT;
+END $$
+DELIMITER ;
+
 
 CALL SetSharePrice(1000, 'F');
 SELECT * FROM Stock;

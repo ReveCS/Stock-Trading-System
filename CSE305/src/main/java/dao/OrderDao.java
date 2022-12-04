@@ -108,15 +108,69 @@ public class OrderDao {
     }
 
     public String submitOrder(Order order, Customer customer, Employee employee, Stock stock) {
-
 		/*
 		 * Student code to place stock order
 		 * Employee can be null, when the order is placed directly by Customer
          * */
+    	
+    	int orderId = order.getId();
+    	Date orderDate = order.getDatetime();
+    	int orderNumShares = order.getNumShares();
+    	
+    	String clientId = customer.getClientId();
+    	int accountNum = customer.getAccountNumber();
+    	
+    	double price = stock.getPrice();
+    	String symbol = stock.getSymbol();
+    	
+    	if (employee == null) {
+    		try {
+    			Class.forName("com.mysql.jdbc.Driver");
+    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?)");
+    			
+    			st.setInt(1, orderId);
+    			st.setDate(2, orderDate);
+    			st.setInt(3, orderNumShares);
+    			st.setString(4, null);
+    			st.setString(5, clientId);
+    			st.setInt(6, accountNum);
+    			st.setString(7, symbol);
+    			st.setDouble(8, price);
+    			
+    			ResultSet rs = st.executeQuery();
+    		
+    		}catch (Exception e) {
+    			System.out.println(e);
+    			return "failure";
+    		}
+    	}
+    	else {
+    		String employeeId = employee.getEmployeeID();
+        	
+    		try {
+    			Class.forName("com.mysql.jdbc.Driver");
+    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?)");
+    			
+    			st.setInt(1, orderId);
+    			st.setDate(2, orderDate);
+    			st.setInt(3, orderNumShares);
+    			st.setString(4, employeeId);
+    			st.setString(5, clientId);
+    			st.setInt(6, accountNum);
+    			st.setString(7, symbol);
+    			st.setDouble(8, price);    	
+    			
+    			ResultSet rs = st.executeQuery();
+    			
+    		}catch (Exception e) {
+    			System.out.println(e);
+    			return "failure";
+    		}
+    	}
 
-		/*Sample data begins*/
         return "success";
-		/*Sample data ends*/
 
     }
 
@@ -226,15 +280,28 @@ public class OrderDao {
 		 */
         List<OrderPriceEntry> orderPriceHistory = new ArrayList<OrderPriceEntry>();
 
-        for (int i = 0; i < 10; i++) {
-            OrderPriceEntry entry = new OrderPriceEntry();
-            entry.setOrderId(orderId);
-            entry.setDate(new Date());
-            entry.setStockSymbol("aapl");
-            entry.setPricePerShare(150.0);
-            entry.setPrice(100.0);
-            orderPriceHistory.add(entry);
-        }
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("");
+			st.setString(1, orderId);
+			ResultSet rs = st.executeQuery();
+			
+			/*Sample data begins*/
+			while(rs.next()) {
+				OrderPriceEntry ope = new OrderPriceEntry();
+				ope.setOrderId();
+				ope.setDate(null);
+				ope.setPrice(0);
+				ope.setPricePerShare(0);
+				ope.setStockSymbol(orderId);
+				orderPriceHistory.add(ope);
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
         return orderPriceHistory;
     }
 }
