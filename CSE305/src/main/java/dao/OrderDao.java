@@ -182,7 +182,28 @@ public class OrderDao {
 		 * The students code to fetch data from the database will be written here
 		 * Show orders for given customerId
 		 */
-        return getDummyOrders();
+    	List<Order> result = new ArrayList<Order>();
+    	
+    	try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				Order order = new Order();
+				order.setDatetime(rs.getDate("Date"));
+				order.setId(rs.getInt("OrderId"));
+				order.setNumShares(rs.getInt("NumShares"));
+				result.add(order);
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+    	
+        return result;
     }
 
 
