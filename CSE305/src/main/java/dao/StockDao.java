@@ -49,12 +49,15 @@ public class StockDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT t.StockId AS 'Most Actively Traded Stocks', COUNT(*) AS Trades FROM Trade AS t GROUP BY StockId ORDER BY Trades DESC;");
+			ResultSet rs = st.executeQuery("SELECT t.StockId AS 'Most Actively Traded Stocks', COUNT(*) AS Trades, s.CompanyName, s.Type, s.NumShares FROM Trade AS t INNER JOIN Stock s ON s.StockSymbol = t.StockId GROUP BY StockId ORDER BY Trades DESC;");
 
 			/*Sample data begins*/
 			while(rs.next()) {
 		        Stock stock = new Stock();
 		        stock.setSymbol(rs.getString("Most Actively Traded Stocks"));
+		        stock.setName(rs.getString("CompanyName"));
+		        stock.setType(rs.getString("Type"));
+		        stock.setNumShares(rs.getInt("NumShares"));
 				result.add(stock);
 			}
 			
@@ -196,7 +199,7 @@ public class StockDao {
 			 */
 			while(rs.next()) {
 				Stock stock = new Stock();
-				stock.setSymbol(rs.getString("StockId"));
+				stock.setSymbol(rs.getString("StockSymbol"));
 				stock.setName(rs.getString("CompanyName"));
 				stock.setPrice(rs.getDouble("PricePerShare"));
 				stock.setNumShares(rs.getInt("NumShares"));
