@@ -9,6 +9,8 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -88,7 +90,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 
-			PreparedStatement st = con.prepareStatement("CALL AddEmployee(?, ?, ?);");
+			PreparedStatement st = con.prepareStatement("CALL AddEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 			st.setString(1, employeeID);
 			st.setString(2, startDate);
 			st.setFloat(3, hourlyRate);
@@ -125,7 +127,9 @@ public class EmployeeDao {
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
 		String startDate = employee.getStartDate();
-		LocalDate date = LocalDate.parse(startDate, formatter); //String -> Date
+		LocalDate localdate = LocalDate.parse(startDate, formatter); //String -> Date
+	    ZoneId defaultZoneId = ZoneId.systemDefault();
+		Date date = Date.from(localdate.atStartOfDay(defaultZoneId).toInstant());
 		float hourlyRate = employee.getHourlyRate();
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
@@ -141,8 +145,23 @@ public class EmployeeDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			PreparedStatement st = con.prepareStatement("CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			
+			st.setString(1, employeeID);
+			st.setDate(2, date);
+			st.setFloat(3, hourlyRate);
+			st.setString(4, lastName);
+			st.setString(5, firstName);
+			st.setString(6, email);
+			st.setString(7, address);
+			st.setInt(8, zipcode);
+			st.setString(9, city);
+			st.setString(10, state);
+			st.setString(11, telephone);
+			
+			ResultSet rs = st.executeQuery();
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -163,8 +182,12 @@ public class EmployeeDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
+			PreparedStatement st = con.prepareStatement("CALL DeleteEmployee(?)");
+			st.setString(1, employeeID);
+			ResultSet rs = st.executeQuery();
+			
 		}catch (Exception e) {
 			System.out.println(e);
 			return "failure";
@@ -233,8 +256,11 @@ public class EmployeeDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmater", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
+			PreparedStatement st = con.prepareStatement("select * from Employee where employeeID like ?");
+			st.setString(1, employeeID);
+			ResultSet rs = st.executeQuery();
 
 			/*Sample data begins*/
 			while(rs.next()) {
@@ -284,8 +310,11 @@ public class EmployeeDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Employee where email like \'%" + username + "%\'");
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("select * from Employee where email like \'%" + username + "%\'");
+			PreparedStatement st = con.prepareStatement("select * from Employee where email like ?");
+			st.setString(1, username);
+			ResultSet rs = st.executeQuery();
 		
 
 			/*Sample data begins*/
