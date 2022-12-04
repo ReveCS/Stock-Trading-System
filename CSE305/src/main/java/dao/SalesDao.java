@@ -46,12 +46,10 @@ public class SalesDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("CALL SalesReport(" + monthInt + ", " + yearInt + ")");
 			PreparedStatement st = con.prepareStatement("CALL SalesReport(?, ?)");
 			
 			st.setInt(1, monthInt);
-			st.setInt(2, yearInt);
+			st.setInt(2, yearInt);	
 			
 			ResultSet rs = st.executeQuery();
 			

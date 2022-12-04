@@ -891,4 +891,3 @@ SELECT * FROM Stock;
 SELECT * FROM PriceHistory;
 SELECT * FROM Clients;
 SELECT * FROM Employee;
-

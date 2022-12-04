@@ -115,6 +115,7 @@ public class OrderDao {
     	
     	int orderId = order.getId();
     	Date orderDate = order.getDatetime();
+    	java.sql.Date sqlDate = new java.sql.Date(orderDate.getTime());
     	int orderNumShares = order.getNumShares();
     	
     	String clientId = customer.getClientId();
@@ -130,7 +131,7 @@ public class OrderDao {
     			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?)");
     			
     			st.setInt(1, orderId);
-    			st.setDate(2, orderDate);
+    			st.setDate(2, sqlDate);
     			st.setInt(3, orderNumShares);
     			st.setString(4, null);
     			st.setString(5, clientId);
