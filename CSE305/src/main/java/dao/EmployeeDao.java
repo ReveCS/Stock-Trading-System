@@ -213,14 +213,13 @@ public class EmployeeDao {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("select * from Employee");
 		
-
 			/*Sample data begins*/
 			while(rs.next()) {
 				Employee employee = new Employee();
 				employee.setId(rs.getString("EmpID"));
 				employee.setStartDate(formatter.format(rs.getDate("StartDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("HourlyRate"));
-				employee.setLevel(rs.getString("isManager"));
+				employee.setLevel(rs.getString("role"));
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
