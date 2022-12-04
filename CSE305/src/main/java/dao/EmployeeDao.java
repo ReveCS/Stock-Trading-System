@@ -211,7 +211,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Employee");
+			ResultSet rs = st.executeQuery("select * from Employee e INNER JOIN Person p ON e.EmpId = p.SSN INNER JOIN Location l ON l.ZipCode = p.ZipCode;");
 		
 			/*Sample data begins*/
 			while(rs.next()) {
@@ -219,7 +219,7 @@ public class EmployeeDao {
 				employee.setId(rs.getString("EmpID"));
 				employee.setStartDate(formatter.format(rs.getDate("StartDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("HourlyRate"));
-				employee.setLevel(rs.getString("role"));
+				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
