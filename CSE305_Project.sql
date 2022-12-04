@@ -96,7 +96,7 @@ CREATE TABLE Transactions (
 CREATE TABLE Orders (
 	OrderId INTEGER NOT NULL AUTO_INCREMENT,
 	NumShares INTEGER,
-	PricePerShare DOUBLE,
+	PricePerShare DOUBLE,	
 	Date DATE,
 	Percentage DECIMAL(5,3),
 	PriceType VARCHAR(13) CHECK ( PriceType IN ('Market', 'MarketOnClose', 'TrailingStop', 'HiddenStop') ),
@@ -862,13 +862,16 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE SubmitOrder(
 	IN OrderId INT,
-    IN DateTime Date,
     IN NumShares INT,
-	IN BrokerId VARCHAR(20),
+    IN PricePerShare DOUBLE,
+	IN Date Date,
+    IN Percentage DECIMAL(5,3),
+    IN PriceType VARCHAR(13),
+    IN OrderType VARCHAR(4),
+	IN AccountNum INT,
     IN ClientId VARCHAR(20),
-    IN AccountNum INT,
-    IN StockSymbol VARCHAR(20),
-    IN StockPrice DOUBLE
+	IN BrokerId VARCHAR(20),
+    IN StockSymbol VARCHAR(20)
     )
 
 BEGIN
@@ -879,7 +882,7 @@ BEGIN
 	END;
     
 	START TRANSACTION;
-    INSERT INTO Orders VALUES (OrderId, NumShares, StockPrice, DateTime, null, null, null);
+    INSERT INTO Orders VALUES (OrderId, NumShares, PricePerShare, Date, Percentage, PriceType, OrderType);
 	INSERT INTO Trade VALUES (AccountNum, ClientId, BrokerId, null, OrderId, StockSymbol);
     COMMIT;
 END $$
