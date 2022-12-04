@@ -206,10 +206,12 @@ BEGIN
 
 	# Update SharePrice in SharePrice history table
     START TRANSACTION;
-	INSERT INTO PriceHistory (StockSymbol, Date, PricePerShare) VALUES
+	INSERT INTO PriceHistory (StockSymbol, Date, PricePerShare, CompanyName) VALUES
     ((SELECT StockSymbol FROM Stock WHERE StockSymbol = InputStock), 
     NOW(), 
-    (SELECT PricePerShare FROM Stock WHERE StockSymbol = InputStock));
+    (SELECT PricePerShare FROM Stock WHERE StockSymbol = InputStock),
+    (SELECT CompanyName FROM Stock WHERE StockSymbol = InputStock),
+    );
 	
     UPDATE Stock 
 	SET SharePrice = Price
@@ -858,54 +860,7 @@ BEGIN
 END $$
 DELIMITER ;
 
--- SELECT sp.ClientId,
--- 		s.*
--- FROM StockPortfolio sp 
--- INNER JOIN Stock s ON sp.Stock = s.StockSymbol
--- WHERE ClientId LIKE '444444444';
 
--- SELECT acc.ClientId,
--- c.CreditCardNumber,
--- c.Rating,
--- acc.AccNum,
--- acc.DateOpened
--- FROM Clients c
--- INNER JOIN Account acc ON c.ClientId = acc.ClientId
--- WHERE c.ClientId = '444444444';
-
--- SELECT c.ClientId, 
--- p.Email
--- FROM Clients c
--- INNER JOIN Person p ON c.ClientId = p.SSN
--- WHERE p.Email = "pml@cs.sunysb.edu";
-
--- SELECT * FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId;
-
-
--- CALL AddEmployee('098765432', '2010-09-13', 75, 0, 'Sparrow', 'Jack', 'jsparrow@sunsyb.edu', '910-03 Hever Blvd', 10982, 'Big City', 'California', '7186450298');
--- CALL SalesReport(11, 2022);
--- CALL ActiveStockList();
--- CALL Best_Seller();
--- CALL CustomerHolding('444444444');
--- CALL searchByType('Market');
--- CALL available_keyword('222222222');
--- CALL StockList();
--- CALL OrderListByStock();
--- CALL all_History('444444444');
--- call trailing_stop_History();
--- CALL StockRevenueSummary('GM');
--- CALL trailing_stop_History();
--- CALL AddCustomer('666666666', '0129381923831', 2, 'Zay', 'Por', 'pzay@cs.sunysb.edu', '039 Bensonhurst', 12031, 'Brooklyn', 'New York', '9173948273');
--- CALL UpdateCustomer('444444444', 6789234567892345, 2, 'IDK', 'Wah!', 'Hopeless St', 110);
--- CALL OrderListByCustomer;
--- CALL StockTypeRevenueSummary('automotive');
--- CALL CustomerRevenueSummary('444444444');
--- CALL CustomerRepMostRevenue();
--- CALL CustomerMostRevenue();
--- CALL RecordOrder(1, 444444444, 123456789, 'GM', 56, NULL, NULL, 'Market', 'Buy');
-
-select * from clients;
-
-
+CALL SetSharePrice(1000, 'F');
 SELECT * FROM Stock;
 
