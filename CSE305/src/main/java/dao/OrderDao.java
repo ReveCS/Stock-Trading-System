@@ -4,6 +4,7 @@ import model.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -129,9 +130,12 @@ public class OrderDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId WHERE t.StockId = 'IBM'");
-
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId WHERE t.StockId LIKE");
+			PreparedStatement st = con.prepareStatement("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId WHERE t.StockId LIKE ?");
+			st.setString(1, stockSymbol);
+			ResultSet rs = st.executeQuery();
+			
 			/*Sample data begins*/
 			while(rs.next()) {
 				Order order = new Order();
@@ -158,9 +162,12 @@ public class OrderDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
-
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
+			PreparedStatement st = con.prepareStatement("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName LIKE ?");
+			st.setString(1, customerName);
+			ResultSet rs = st.executeQuery();
+			
 			/*Sample data begins*/
 			while(rs.next()) {
 				Order order = new Order();
@@ -187,9 +194,12 @@ public class OrderDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
-
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE t.ClientId LIKE ");
+			PreparedStatement st = con.prepareStatement("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE t.ClientId LIKE ?");
+			st.setString(1, customerId);
+			ResultSet rs = st.executeQuery();
+			
 			/*Sample data begins*/
 			while(rs.next()) {
 				Order order = new Order();
