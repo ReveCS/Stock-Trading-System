@@ -112,7 +112,6 @@ public class OrderDao {
 		 * Student code to place stock order
 		 * Employee can be null, when the order is placed directly by Customer
          * */
-    	int orderId;
     	int orderNumShares;
     	double price;
     	Date orderDate;
@@ -125,7 +124,6 @@ public class OrderDao {
     	String symbol;
     	
     	if(orderType == 1) { //market
-    		orderId = order.getId();
 	    	orderDate = order.getDatetime();
 	    	sqlDate = new java.sql.Date(orderDate.getTime());
 	    	orderNumShares = order.getNumShares();
@@ -141,19 +139,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'Market');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, null);
-	    			st.setString(11, symbol);
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "Market");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, null);
+	    			st.setString(10, symbol);
 
 	    			
 	    			ResultSet rs = st.executeQuery();
@@ -169,19 +166,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'Market');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, employeeId);
-	    			st.setString(11, symbol);  	
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "Market");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
 	    			
 	    			ResultSet rs = st.executeQuery();
 	    			
@@ -193,7 +189,6 @@ public class OrderDao {
     	}
     
 		else if(orderType == 2) { //marketOnClose
-			orderId = order.getId();
 	    	orderDate = order.getDatetime();
 	    	sqlDate = new java.sql.Date(orderDate.getTime());
 	    	orderNumShares = order.getNumShares();
@@ -209,19 +204,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'MarketOnClose');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, null);
-	    			st.setString(11, symbol);
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "MarketOnClose");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, null);
+	    			st.setString(10, symbol);
 
 	    			
 	    			ResultSet rs = st.executeQuery();
@@ -237,19 +231,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'MarketOnClose');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, employeeId);
-	    			st.setString(11, symbol);  	
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "MarketOnClose");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
 	    			
 	    			ResultSet rs = st.executeQuery();
 	    			
@@ -262,7 +255,6 @@ public class OrderDao {
 
     	
     	else if(orderType == 3) { //trailingStop 
-    		orderId = order.getId();
 	    	orderDate = order.getDatetime();
 	    	sqlDate = new java.sql.Date(orderDate.getTime());
 	    	orderNumShares = order.getNumShares();
@@ -278,19 +270,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'TrailingStop');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, null);
-	    			st.setString(11, symbol);
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, percent);
+	    			st.setString(5, "TrailingStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, null);
+	    			st.setString(10, symbol);
 
 	    			
 	    			ResultSet rs = st.executeQuery();
@@ -306,19 +297,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'TrailingStop');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, employeeId);
-	    			st.setString(11, symbol);  	
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, percent);
+	    			st.setString(5, "TrailingStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
 	    			
 	    			ResultSet rs = st.executeQuery();
 	    			
@@ -330,7 +320,6 @@ public class OrderDao {
     	}
     	
     	else { //hiddenStop 
-    		orderId = order.getId();
 	    	orderDate = order.getDatetime();
 	    	sqlDate = new java.sql.Date(orderDate.getTime());
 	    	orderNumShares = order.getNumShares();
@@ -345,19 +334,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'HiddenStop');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, null);
-	    			st.setString(11, symbol);
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "HiddenStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, null);
+	    			st.setString(10, symbol);
 
 	    			
 	    			ResultSet rs = st.executeQuery();
@@ -373,19 +361,18 @@ public class OrderDao {
 	    		try {
 	    			Class.forName("com.mysql.jdbc.Driver");
 	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    			
-	    			st.setInt(1, orderId);
-	    			st.setInt(2, orderNumShares);
-	    			st.setInt(3, );
-	    			st.setDate(4, sqlDate);
-	    			st.setString(5, );
-	    			st.setInt(6, 'HiddenStop');
-	    			st.setString(7, );
-	    			st.setInt(8, accountNum);
-	    			st.setString(9, clientId);
-	    			st.setString(10, employeeId);
-	    			st.setString(11, symbol);  	
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "HiddenStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
 	    			
 	    			ResultSet rs = st.executeQuery();
 	    			
@@ -394,60 +381,6 @@ public class OrderDao {
 	    			return "failure";
 	    		}
 	    	}
-    	}
-    	
-    	if (employee == null) {
-    		try {
-    			Class.forName("com.mysql.jdbc.Driver");
-    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    			
-    			st.setInt(1, orderId);
-    			st.setInt(2, orderNumShares);
-    			st.setInt(3, );
-    			st.setDate(4, sqlDate);
-    			st.setString(5, );
-    			st.setInt(6, );
-    			st.setString(7, );
-    			st.setInt(8, accountNum);
-    			st.setString(9, clientId);
-    			st.setString(10, null);
-    			st.setString(11, symbol);
-
-    			
-    			ResultSet rs = st.executeQuery();
-    		
-    		}catch (Exception e) {
-    			System.out.println(e);
-    			return "failure";
-    		}
-    	}
-    	else {
-    		String employeeId = employee.getEmployeeID();
-        	
-    		try {
-    			Class.forName("com.mysql.jdbc.Driver");
-    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    			
-    			st.setInt(1, orderId);
-    			st.setInt(2, orderNumShares);
-    			st.setInt(3, );
-    			st.setDate(4, sqlDate);
-    			st.setString(5, );
-    			st.setInt(6, );
-    			st.setString(7, );
-    			st.setInt(8, accountNum);
-    			st.setString(9, clientId);
-    			st.setString(10, employeeId);
-    			st.setString(11, symbol);  	
-    			
-    			ResultSet rs = st.executeQuery();
-    			
-    		}catch (Exception e) {
-    			System.out.println(e);
-    			return "failure";
-    		}
     	}
 
         return "success";

@@ -170,6 +170,7 @@ INSERT INTO StockPortfolio VALUES ('222222222', 1, 'IBM', 50);
 INSERT INTO StockPortfolio VALUES ('444444444', 1, 'GM', 250);
 
 INSERT INTO Orders VALUES (1, 75, 25.51, '2022-11-07', NULL, 'Market', 'Buy');
+INSERT INTO Orders VALUES (1, 75, 25.51, '2022-11-07', NULL, 'Market', 'Buy');
 INSERT INTO Orders VALUES (2, 10, 105.61, '2022-11-07', 5, 'TrailingStop', 'Sell');
 INSERT INTO Orders VALUES (3, 50, 50, '2022-11-08', NULL, 'Market', 'Sell');
 INSERT INTO Orders VALUES (4, 24, 90, '2022-11-11', NULL, 'HiddenStop', 'Sell');
@@ -846,7 +847,6 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE SubmitOrder(
-	IN OrderId INT,
     IN NumShares INT,
     IN PricePerShare DOUBLE,
 	IN Date Date,
@@ -866,8 +866,27 @@ BEGIN
 	END;
     
 	START TRANSACTION;
-    INSERT INTO Orders VALUES (OrderId, NumShares, PricePerShare, Date, Percentage, PriceType, OrderType);
-	INSERT INTO Trade VALUES (AccountNum, ClientId, BrokerId, null, OrderId, StockSymbol);
+    IF Percentage = 0 THEN
+		INSERT INTO Orders VALUES (NULL, NumShares, PricePerShare, Date, NULL, PriceType, OrderType);
+	ELSE
+		INSERT INTO Orders VALUES (NULL, NumShares, PricePerShare, Date, Percentage, PriceType, OrderType);
+	END IF;
+    
+    IF PriceType='Market' THEN
+		INSERT INTO Transactions VALUES (
+			NULL,
+			(SELECT NumShares*PricePerShare*0.05 AS Fee FROM Orders o WHERE o.OrderId = OrderId),
+			NOW(),
+			(SELECT PricePerShare FROM Orders o WHERE o.OrderId = OrderId)
+			);
+	ELSE
+		INSERT INTO Transaction VALUES (NULL,NULL,NULL,NULL);
+	END IF;
+    
+	SET @transaction_id = (SELECT LAST_INSERT_ID());
+
+	INSERT INTO Trade VALUES (AccountNum, ClientId, BrokerId, @transaction_id, OrderId, StockSymbol);
+    
     COMMIT;
 END $$
 DELIMITER ;
