@@ -170,7 +170,6 @@ INSERT INTO StockPortfolio VALUES ('222222222', 1, 'IBM', 50);
 INSERT INTO StockPortfolio VALUES ('444444444', 1, 'GM', 250);
 
 INSERT INTO Orders VALUES (1, 75, 25.51, '2022-11-07', NULL, 'Market', 'Buy');
-INSERT INTO Orders VALUES (1, 75, 25.51, '2022-11-07', NULL, 'Market', 'Buy');
 INSERT INTO Orders VALUES (2, 10, 105.61, '2022-11-07', 5, 'TrailingStop', 'Sell');
 INSERT INTO Orders VALUES (3, 50, 50, '2022-11-08', NULL, 'Market', 'Sell');
 INSERT INTO Orders VALUES (4, 24, 90, '2022-11-11', NULL, 'HiddenStop', 'Sell');
@@ -877,9 +876,9 @@ BEGIN
     IF PriceType='Market' THEN
 		INSERT INTO Transactions VALUES (
 			NULL,
-			(SELECT NumShares*PricePerShare*0.05 AS Fee FROM Orders o WHERE o.OrderId = OrderId),
+			(SELECT NumShares*PricePerShare*0.05 AS Fee FROM Orders o WHERE o.OrderId = @order_id),
 			NOW(),
-			(SELECT PricePerShare FROM Orders o WHERE o.OrderId = OrderId)
+			(SELECT PricePerShare FROM Orders o WHERE o.OrderId = @order_id)
 			);
 	ELSE
 		INSERT INTO Transaction VALUES (NULL,NULL,NULL,NULL);
