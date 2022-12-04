@@ -63,9 +63,9 @@ CREATE TABLE PriceHistory (
 	Date DATE,
 	PricePerShare DOUBLE,
 	CompanyName VARCHAR(20) NOT NULL,
-	Type VARCHAR(20) NOT NULL,
+	StockType VARCHAR(20) NOT NULL,
 	NumShares INT NOT NULL DEFAULT 1,
-	PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, Type, NumShares),
+	PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, StockType, NumShares),
 	FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
 
 CREATE TABLE Account (
@@ -206,15 +206,17 @@ BEGIN
 
 	# Update SharePrice in SharePrice history table
     START TRANSACTION;
-	INSERT INTO PriceHistory (StockSymbol, Date, PricePerShare, CompanyName) VALUES
+	INSERT INTO PriceHistory (StockSymbol, Date, PricePerShare, CompanyName, StockType, NumShares) VALUES
     ((SELECT StockSymbol FROM Stock WHERE StockSymbol = InputStock), 
     NOW(), 
     (SELECT PricePerShare FROM Stock WHERE StockSymbol = InputStock),
-    (SELECT CompanyName FROM Stock WHERE StockSymbol = InputStock)
+    (SELECT CompanyName FROM Stock WHERE StockSymbol = InputStock),
+    (SELECT StockType FROM Stock WHERE StockSymbol = InputStock),
+    (SELECT NumShares FROM Stock WHERE StockSymbol = InputStock)
     );
 	
     UPDATE Stock 
-	SET SharePrice = Price
+	SET PricePerShare = Price
 	WHERE StockSymbol = InputStock;
     COMMIT;
 END$$
@@ -873,7 +875,6 @@ CREATE PROCEDURE SubmitOrder(
 	IN BrokerId VARCHAR(20),
     IN StockSymbol VARCHAR(20)
     )
-
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
 	BEGIN
