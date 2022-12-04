@@ -263,8 +263,8 @@ public class EmployeeDao {
 
 			/*Sample data begins*/
 			while(rs.next()) {
-				employee.setId(rs.getString("employeeID"));
-				employee.setStartDate(formatter.format(rs.getString("startDate"))); //Date -> String
+				employee.setId(rs.getString("EmpID"));
+				employee.setStartDate((rs.getString("startDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("hourlyRate"));
 				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
 				employee.setFirstName(rs.getString("firstName"));
@@ -284,7 +284,7 @@ public class EmployeeDao {
 			System.out.println(e);
 		}
 		
-		System.out.println(employee.getFirstName());
+		System.out.println(employee.getSsn());
 		return employee;
 	}
 	

@@ -65,7 +65,7 @@
 	  </div>
    	  <div class="form-group">
 	    <label for="employeeSSN">SSN (Employee ID)</label>
-	    <input type="text" class="form-control" id="employeeSSN" name="employeeSSN" placeholder="XXX-XX-XXXX" value=${editEmployee.employeeID} readonly>
+	    <input type="text" class="form-control" id="employeeSSN" name="employeeSSN" placeholder="XXX-XX-XXXX" value=${editEmployee.id} readonly>
 	  </div>
    	  <div class="form-group">
 	    <label for="employeeStartDate">Start Date</label>
