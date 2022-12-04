@@ -79,7 +79,7 @@ public class CustomerDao {
 			while(rs.next()) {
 				Customer customer = new Customer();
 				
-				customers.add();
+//				customers.add();
 			}
 			
 			/*Sample data ends*/
@@ -116,8 +116,6 @@ public class CustomerDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("SELECT acc.ClientId, c.CreditCardNumber, c.Rating, acc.AccNum, acc.DateOpened FROM Clients c INNER JOIN Account acc ON c.ClientId = acc.ClientId WHERE c.ClientId = \'%" + customerID + "\'%");
 			PreparedStatement st = con.prepareStatement("SELECT acc.ClientId, c.CreditCardNumber, c.Rating, acc.AccNum, acc.DateOpened FROM Clients c INNER JOIN Account acc ON c.ClientId = acc.ClientId WHERE c.ClientId LIKE ?");
 			st.setString(1, customerID);
 			ResultSet rs = st.executeQuery();
@@ -151,8 +149,6 @@ public class CustomerDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("delete from Clients where ClientId like \'%" + customerID + "%\'");
 			PreparedStatement st = con.prepareStatement("CALL DeleteCustomer(?)");
 			st.setString(1, customerID);
 			ResultSet rs = st.executeQuery();
@@ -179,8 +175,6 @@ public class CustomerDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("SELECT c.ClientId, p.Email FROM Clients c INNER JOIN Person p ON c.ClientId = p.SSN WHERE p.Email = \'%" + email + "\'%");
 			PreparedStatement st = con.prepareStatement("SELECT c.ClientId, p.Email FROM Clients c INNER JOIN Person p ON c.ClientId = p.SSN WHERE p.Email LIKE ?");
 			st.setString(1, email);
 			ResultSet rs = st.executeQuery();
@@ -278,8 +272,6 @@ public class CustomerDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("CALL UpdateCustomer(\'%" + clientId + "\'%, \'%" + creditCard + "\'%, " + rating + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			PreparedStatement st = con.prepareStatement("CALL AddCustomer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			
 			st.setString(1, clientId);
@@ -360,27 +352,27 @@ public class CustomerDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Clients");
+			ResultSet rs = st.executeQuery("SELECT * from Clients c INNER JOIN Person p ON p.SSN = c.ClientId;");
 		
 			/*Sample data begins*/
 			while(rs.next()) {
 				Customer customer = new Customer();
 				customer.setClientId(rs.getString("ClientId"));
-				customer.setCreditCard(rs.getString("CreditCardNumber"));
-				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
-				customer.setAccountNumber(rs.getInt("AccNum"));
-				customer.setRating(rs.getInt("Rating"));
+//				customer.setCreditCard(rs.getString("CreditCardNumber"));
+//				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
+//				customer.setAccountNumber(rs.getInt("AccNum"));
+//				customer.setRating(rs.getInt("Rating"));
 				customer.setFirstName(rs.getString("FirstName"));
 				customer.setLastName(rs.getString("LastName"));
-				customer.setEmail(rs.getString("Email"));
-				customer.setSsn(rs.getString("Ssn"));
-				customer.setAddress(rs.getString("Address"));
-				Location location = new Location();
-				location.setCity(rs.getString("City"));
-				location.setState(rs.getString("State"));
-				location.setZipCode(rs.getInt("ZipCode"));
-				customer.setLocation(location);
-				customer.setTelephone(rs.getString("Telephone"));
+//				customer.setEmail(rs.getString("Email"));
+//				customer.setSsn(rs.getString("Ssn"));
+//				customer.setAddress(rs.getString("Address"));
+//				Location location = new Location();
+//				location.setCity(rs.getString("City"));
+//				location.setState(rs.getString("State"));
+//				location.setZipCode(rs.getInt("ZipCode"));
+//				customer.setLocation(location);
+//				customer.setTelephone(rs.getString("Telephone"));
 				customers.add(customer);
 			}
 			/*Sample data ends*/
