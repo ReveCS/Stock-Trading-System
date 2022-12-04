@@ -249,15 +249,15 @@ public class EmployeeDao {
 		 * The record is required to be encapsulated as a "Employee" class object
 		 */
 		
+		System.out.println(employeeID);
+		
 		Employee employee = new Employee();
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmater", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
-			PreparedStatement st = con.prepareStatement("select * from Employee where employeeID like ?");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("SELECT * FROM Employee e INNER JOIN Person p ON p.SSN = e.EmpId INNER JOIN Location l ON l.ZipCode = p.ZipCode WHERE EmpId = ? ");
 			st.setString(1, employeeID);
 			ResultSet rs = st.executeQuery();
 
@@ -266,7 +266,7 @@ public class EmployeeDao {
 				employee.setId(rs.getString("employeeID"));
 				employee.setStartDate(formatter.format(rs.getString("startDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("hourlyRate"));
-				employee.setLevel(rs.getString("isManager"));
+				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
@@ -284,6 +284,7 @@ public class EmployeeDao {
 			System.out.println(e);
 		}
 		
+		System.out.println(employee.getFirstName());
 		return employee;
 	}
 	
