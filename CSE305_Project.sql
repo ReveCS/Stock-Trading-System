@@ -584,8 +584,6 @@ END$$
 DELIMITER ;
 
 SELECT * FROM Person;
-CALL AddCustomer('777777777', '0129381923831', 2, 'Zay', 'Por', 'pzay@cs.sunysb.edu', '039 Bensonhurst', 12031, 'Brooklyn', 'New York', '9173948273');
-INSERT INTO Account VALUES ('4123213123', SUM((SELECT acc.AccNum FROM Account acc WHERE acc.ClientId = '444444444')) + 1, NOW());
 
 DELIMITER $$
 CREATE PROCEDURE UpdateCustomer(
@@ -650,8 +648,8 @@ END$$
 DELIMITER ;
 
 SELECT * From Clients;
-CALL DeleteCustomer('444444444');
 
+DELIMITER $$
 CREATE PROCEDURE CustomerMailingList (
 	IN bId INTEGER
 	)
