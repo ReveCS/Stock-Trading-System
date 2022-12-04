@@ -1,13 +1,11 @@
 DROP DATABASE Stonksmaster;
 CREATE DATABASE Stonksmaster;
-USE stonksmaster;
+USE Stonksmaster;
 
 
 DELIMITER $$
 CREATE PROCEDURE create_all_tables ()
 BEGIN
-
-  
 
 CREATE TABLE Location (
 	ZipCode MEDIUMINT,
