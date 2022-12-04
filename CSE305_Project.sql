@@ -576,7 +576,8 @@ BEGIN
     INSERT INTO Location VALUES (nZipCode, nCity, nState);
 	INSERT INTO Person VALUES (SSN, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
     INSERT INTO Clients VALUES (SSN, nCreditCardNumber, nRating);
-	INSERT INTO Account VALUES (SSN, SUM((SELECT acc.AccNum FROM Account acc WHERE acc.ClientId = n.ClientId)) + 1, NOW());
+    
+	INSERT INTO Account VALUES (SSN, (SELECT COUNT(*) FROM Account acc WHERE acc.ClientId = SSN) + 1, NOW());
 	COMMIT;
 END$$
 DELIMITER ;
@@ -903,10 +904,7 @@ DELIMITER ;
 -- CALL CustomerMostRevenue();
 -- CALL RecordOrder(1, 444444444, 123456789, 'GM', 56, NULL, NULL, 'Market', 'Buy');
 
-SELECT * FROM Trade;
-SELECT * FROM Person;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
-SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip';
+select * from clients;
 
 
 SELECT * FROM Stock;
