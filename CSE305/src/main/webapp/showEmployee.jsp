@@ -42,7 +42,7 @@
                     <td>
                         <form method="POST" action="editEmployee">
                             <div class="form-group">
-                                <input type="hidden" class="form-control" name="employeeID" value=${cd.employeeID}>
+                                <input type="hidden" class="form-control" name="employeeID" value=${cd.id}>
                             </div>
                             <input type="submit" value="Edit" class="btn btn-success"/>
                         </form>
@@ -50,7 +50,7 @@
                     <td>
                         <form method="POST" action="deleteEmployee">
                             <div class="form-group">
-                                <input type="hidden" class="form-control" name="employeeID" value=${cd.employeeID}>
+                                <input type="hidden" class="form-control" name="employeeID" value=${cd.id}>
                             </div>
                             <input type="submit" value="Delete" class="btn btn-success"/>
                         </form>
