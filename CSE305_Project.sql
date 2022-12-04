@@ -137,10 +137,12 @@ CREATE PROCEDURE insert_dummy_data ()
 BEGIN
 # INSERT DEMO DATA CODE 
 
+INSERT INTO Location VALUES(0, "", "");
 INSERT INTO Location VALUES (11790, 'Stony Brook', 'NY');
 INSERT INTO Location VALUES (93536, 'Los Angeles', 'CA');
 INSERT INTO Location VALUES (11794, 'Stony Brook', 'NY');
 
+INSERT INTO Person VALUES ('0', "", "", "", "", 0, "");
 INSERT INTO Person VALUES ('111111111', 'Yang', 'Shang', 'syang@cs.sunysb.edu', '123 Success Street', 11790, '5166328959');
 INSERT INTO Person VALUES ('222222222', 'Du', 'Victor', 'vicdu@cs.sunysb.edu', '456 Fortune Road', 11790, '5166324360');
 INSERT INTO Person VALUES ('333333333', 'Smith', 'John', 'jsmith@ic.sunysb.edu', '789 Peace Blvd', 93536, '3154434321');
@@ -148,6 +150,7 @@ INSERT INTO Person VALUES ('444444444', 'Philip', 'Lewis', 'pml@cs.sunysb.edu', 
 INSERT INTO Person VALUES ('123456789', 'Smith', 'David', 'dsmith@cs.sunysb.edu', '123 College road', 11790, '5162152345');
 INSERT INTO Person VALUES ('789123456', 'Warren', 'David', 'dwarren@cs.sunysb.edu', '456 Sunken Street', 11790, '5162152345');
 
+INSERT INTO Employee VALUEs ('0', '0000-00-00', 0, 0);
 INSERT INTO Employee VALUES ('123456789', '2005-11-01', 60, 0);
 INSERT INTO Employee VALUES ('789123456', '2005-11-01', 50, 1);
 
@@ -892,7 +895,7 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL SubmitOrder(50, 100, "2022-12-03", 0, "Market", "Buy", 1, "444444444", "123456789", "IBM");
+CALL SubmitOrder(50, 100, "2022-12-03", 0, "Market", "Buy", 1, "444444444", '0', "IBM");
 
 
 CALL SetSharePrice(123, 'F');

@@ -149,7 +149,7 @@ public class OrderDao {
 	    			st.setString(6, buySellType);
 	    			st.setInt(7, accountNum);
 	    			st.setString(8, clientId);
-	    			st.setString(9, null);
+	    			st.setString(9, "0");
 	    			st.setString(10, symbol);
 
 	    			
@@ -214,7 +214,7 @@ public class OrderDao {
 	    			st.setString(6, buySellType);
 	    			st.setInt(7, accountNum);
 	    			st.setString(8, clientId);
-	    			st.setString(9, null);
+	    			st.setString(9, "0");
 	    			st.setString(10, symbol);
 
 	    			
@@ -280,7 +280,7 @@ public class OrderDao {
 	    			st.setString(6, null);
 	    			st.setInt(7, accountNum);
 	    			st.setString(8, clientId);
-	    			st.setString(9, null);
+	    			st.setString(9, "0");
 	    			st.setString(10, symbol);
 
 	    			
@@ -344,7 +344,7 @@ public class OrderDao {
 	    			st.setString(6, null);
 	    			st.setInt(7, accountNum);
 	    			st.setString(8, clientId);
-	    			st.setString(9, null);
+	    			st.setString(9, "0");
 	    			st.setString(10, symbol);
 
 	    			
