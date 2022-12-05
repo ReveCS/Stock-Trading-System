@@ -56,6 +56,7 @@ public class AddOrderController extends HttpServlet {
             employeeId = (String) request.getSession(false).getAttribute("employeeID");
             employee = employeeDao.getEmployee(employeeId);
         }
+
         String numShares = request.getParameter("orderNumShares");
         String type = request.getParameter("orderType");
         String buySellType = request.getParameter("orderBuySellType");
@@ -77,7 +78,7 @@ public class AddOrderController extends HttpServlet {
             order.setDatetime(new Date());
             order.setBuySellType(buySellType);
             order.setNumShares(Integer.parseInt(numShares));
-            result = orderDao.submitOrder(order, customer, employee, stock);
+            result = orderDao.submitOrder(order, customer, employee, stock, 1);
         }
         else if(type.equals("MarketOnClose"))
 		{
@@ -85,7 +86,7 @@ public class AddOrderController extends HttpServlet {
             order.setDatetime(new Date());
             order.setBuySellType(buySellType);
             order.setNumShares(Integer.parseInt(numShares));
-            result = orderDao.submitOrder(order, customer, employee, stock);
+            result = orderDao.submitOrder(order, customer, employee, stock, 2);
         }
 		else if(type.equals("TrailingStop"))
 		{
@@ -93,7 +94,7 @@ public class AddOrderController extends HttpServlet {
             order.setDatetime(new Date());
             order.setPercentage(Double.parseDouble(orderStockPercentage));
             order.setNumShares(Integer.parseInt(numShares));
-            result = orderDao.submitOrder(order, customer, employee, stock);
+            result = orderDao.submitOrder(order, customer, employee, stock, 3);
 
         }
 		else if(type.equals("HiddenStop"))
@@ -102,7 +103,7 @@ public class AddOrderController extends HttpServlet {
             order.setDatetime(new Date());
             order.setPricePerShare(Double.parseDouble(pricePerShare));
             order.setNumShares(Integer.parseInt(numShares));
-            result = orderDao.submitOrder(order, customer, employee, stock);
+            result = orderDao.submitOrder(order, customer, employee, stock, 4);
         }
         RequestDispatcher rd;
 

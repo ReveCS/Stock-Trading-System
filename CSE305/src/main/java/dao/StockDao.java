@@ -49,12 +49,15 @@ public class StockDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT t.StockId AS 'Most Actively Traded Stocks', COUNT(*) AS Trades FROM Trade AS t GROUP BY StockId ORDER BY Trades DESC;");
+			ResultSet rs = st.executeQuery("SELECT t.StockId AS 'Most Actively Traded Stocks', COUNT(*) AS Trades, s.CompanyName, s.Type, s.NumShares FROM Trade AS t INNER JOIN Stock s ON s.StockSymbol = t.StockId GROUP BY StockId ORDER BY Trades DESC;");
 
 			/*Sample data begins*/
 			while(rs.next()) {
 		        Stock stock = new Stock();
 		        stock.setSymbol(rs.getString("Most Actively Traded Stocks"));
+		        stock.setName(rs.getString("CompanyName"));
+		        stock.setType(rs.getString("Type"));
+		        stock.setNumShares(rs.getInt("NumShares"));
 				result.add(stock);
 			}
 			
@@ -108,7 +111,6 @@ public class StockDao {
 		 * Return stock matching symbol
 		 */
     	Stock result = new Stock();
-    	
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
@@ -120,14 +122,15 @@ public class StockDao {
 			
 			ResultSet rs = st.executeQuery();
 			
-			/*Sample data begins*/
-		    result.setSymbol(rs.getString("StockSymbol"));
-		    result.setName(rs.getString("CompanyName"));
-		    result.setType(rs.getString("Type"));
-		    result.setPrice(rs.getFloat("PricePerShare"));
-		    result.setNumShares(rs.getInt("NumShares"));
-			
-			/*Sample data ends*/
+			if (rs.next()) {
+				result.setSymbol(rs.getString("StockSymbol"));
+			    result.setName(rs.getString("CompanyName"));
+			    result.setType(rs.getString("Type"));
+			    result.setPrice(rs.getFloat("PricePerShare"));
+			    result.setNumShares(rs.getInt("NumShares"));
+			}
+
+			return result;
 		}catch (Exception e) {
 			System.out.println(e);
 		}
@@ -167,7 +170,29 @@ public class StockDao {
 		 * Get list of bestseller stocks
 		 */
 
-		return getDummyStocks();
+		List<Stock> result = new ArrayList<Stock>();
+
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("CALL Best_Seller()");
+			ResultSet rs = st.executeQuery();
+			
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockSymbol"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setType(rs.getString("Type"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				result.add(stock);
+			}
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
 
 	}
 
@@ -196,7 +221,7 @@ public class StockDao {
 			 */
 			while(rs.next()) {
 				Stock stock = new Stock();
-				stock.setSymbol(rs.getString("StockId"));
+				stock.setSymbol(rs.getString("StockSymbol"));
 				stock.setName(rs.getString("CompanyName"));
 				stock.setPrice(rs.getDouble("PricePerShare"));
 				stock.setNumShares(rs.getInt("NumShares"));
@@ -214,7 +239,6 @@ public class StockDao {
     }
 
 	public List<Stock> getStocksByCustomer(String customerId) {
-
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Get stockHoldings of customer with customerId
@@ -225,8 +249,6 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE \'%" + customerId + "\'%");
 			PreparedStatement st = con.prepareStatement("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE ?");
 			st.setString(1, customerId);
 			ResultSet rs = st.executeQuery();
@@ -289,9 +311,31 @@ public class StockDao {
 		 * The students code to fetch data from the database will be written here
 		 * Return stock suggestions for given "customerId"
 		 */
+    	List<Stock> result = new ArrayList<Stock>();
 
-        return getDummyStocks();
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("CALL SuggestStock(?)");
+			st.setString(1, customerID);
+			ResultSet rs = st.executeQuery();
+			
+			
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockSymbol"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setType(rs.getString("Type"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				result.add(stock);
+			}
 
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
     }
 
     public List<Stock> getStockPriceHistory(String stockSymbol) {
@@ -306,8 +350,6 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("SELECT * FROM PriceHistory WHERE StockSymbol LIKE \'%" + stockSymbol + "\'%");
 			PreparedStatement st = con.prepareStatement("SELECT * FROM PriceHistory WHERE StockSymbol LIKE ?");
 			st.setString(1, stockSymbol);
 			ResultSet rs = st.executeQuery();
@@ -316,7 +358,7 @@ public class StockDao {
 				Stock stock = new Stock();
 				stock.setSymbol(rs.getString("StockSymbol"));
 				stock.setName(rs.getString("CompanyName"));
-				stock.setType(rs.getString("Type"));
+				stock.setType(rs.getString("StockType"));
 				stock.setPrice(rs.getDouble("PricePerShare"));
 				stock.setNumShares(rs.getInt("NumShares"));
 				result.add(stock);

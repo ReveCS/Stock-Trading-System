@@ -4,6 +4,7 @@ import model.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -106,16 +107,283 @@ public class OrderDao {
         return orders;
     }
 
-    public String submitOrder(Order order, Customer customer, Employee employee, Stock stock) {
-
+    public String submitOrder(Order order, Customer customer, Employee employee, Stock stock, int orderType) {
 		/*
 		 * Student code to place stock order
 		 * Employee can be null, when the order is placed directly by Customer
          * */
+    	int orderNumShares;
+    	double price;
+    	Date orderDate;
+    	java.sql.Date sqlDate;
+    	double percent;
+    	String priceType;
+    	String buySellType;
+    	String clientId;
+    	int accountNum;
+    	String symbol;
+    	
+    	if(orderType == 1) { //market
+	    	orderDate = order.getDatetime();
+	    	sqlDate = new java.sql.Date(orderDate.getTime());
+	    	orderNumShares = order.getNumShares();
+	    	buySellType = ((MarketOrder) order).getBuySellType();
+	    	
+	    	clientId = customer.getClientId();
+	    	accountNum = customer.getAccountNumber();
 
-		/*Sample data begins*/
+	    	price = stock.getPrice();
+	    	symbol = stock.getSymbol();
+	    	
+	    	if (employee == null) {
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "Market");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, "0");
+	    			st.setString(10, symbol);
+
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    		
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+	    	else {
+	    		String employeeId = employee.getEmployeeID();
+	        	
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "Market");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    			
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+    	}
+    
+		else if(orderType == 2) { //marketOnClose
+	    	orderDate = order.getDatetime();
+	    	sqlDate = new java.sql.Date(orderDate.getTime());
+	    	orderNumShares = order.getNumShares();
+	    	buySellType = ((MarketOnCloseOrder) order).getBuySellType();
+	    	
+	    	clientId = customer.getClientId();
+	    	accountNum = customer.getAccountNumber();
+	    	
+	    	price = stock.getPrice();
+	    	symbol = stock.getSymbol();
+	    	
+	    	if (employee == null) {
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "MarketOnClose");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, "0");
+	    			st.setString(10, symbol);
+
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    		
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+	    	else {
+	    		String employeeId = employee.getEmployeeID();
+	        	
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "MarketOnClose");
+	    			st.setString(6, buySellType);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    			
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+		}
+
+    	
+    	else if(orderType == 3) { //trailingStop 
+	    	orderDate = order.getDatetime();
+	    	sqlDate = new java.sql.Date(orderDate.getTime());
+	    	orderNumShares = order.getNumShares();
+	    	percent = ((TrailingStopOrder) order).getPercentage();
+	    	
+	    	clientId = customer.getClientId();
+	    	accountNum = customer.getAccountNumber();
+	    	
+	    	price = stock.getPrice();
+	    	symbol = stock.getSymbol();
+	    	
+	    	if (employee == null) {
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, percent);
+	    			st.setString(5, "TrailingStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, "0");
+	    			st.setString(10, symbol);
+
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    		
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+	    	else {
+	    		String employeeId = employee.getEmployeeID();
+	        	
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, percent);
+	    			st.setString(5, "TrailingStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    			
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+    	}
+    	
+    	else { //hiddenStop 
+	    	orderDate = order.getDatetime();
+	    	sqlDate = new java.sql.Date(orderDate.getTime());
+	    	orderNumShares = order.getNumShares();
+	    	price = ((HiddenStopOrder) order).getPricePerShare();
+	    	
+	    	clientId = customer.getClientId();
+	    	accountNum = customer.getAccountNumber();
+	    	
+	    	symbol = stock.getSymbol();
+	    	
+	    	if (employee == null) {
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "HiddenStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, "0");
+	    			st.setString(10, symbol);
+
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    		
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+	    	else {
+	    		String employeeId = employee.getEmployeeID();
+	        	
+	    		try {
+	    			Class.forName("com.mysql.jdbc.Driver");
+	    			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+	    			PreparedStatement st = con.prepareStatement("CALL SubmitOrder(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    			
+	    			st.setInt(1, orderNumShares);
+	    			st.setDouble(2, price);
+	    			st.setDate(3, sqlDate);
+	    			st.setDouble(4, 0);
+	    			st.setString(5, "HiddenStop");
+	    			st.setString(6, null);
+	    			st.setInt(7, accountNum);
+	    			st.setString(8, clientId);
+	    			st.setString(9, employeeId);
+	    			st.setString(10, symbol);  	
+	    			
+	    			ResultSet rs = st.executeQuery();
+	    			
+	    		}catch (Exception e) {
+	    			System.out.println(e);
+	    			return "failure";
+	    		}
+	    	}
+    	}
+
         return "success";
-		/*Sample data ends*/
 
     }
 
@@ -129,9 +397,12 @@ public class OrderDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId WHERE t.StockId = 'IBM'");
-
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId WHERE t.StockId LIKE");
+			PreparedStatement st = con.prepareStatement("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId WHERE t.StockId LIKE ?");
+			st.setString(1, stockSymbol);
+			ResultSet rs = st.executeQuery();
+			
 			/*Sample data begins*/
 			while(rs.next()) {
 				Order order = new Order();
@@ -158,9 +429,12 @@ public class OrderDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
-
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
+			PreparedStatement st = con.prepareStatement("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName LIKE ?");
+			st.setString(1, customerName);
+			ResultSet rs = st.executeQuery();
+			
 			/*Sample data begins*/
 			while(rs.next()) {
 				Order order = new Order();
@@ -187,9 +461,12 @@ public class OrderDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE p.LastName = 'Philip'");
-
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE t.ClientId LIKE ");
+			PreparedStatement st = con.prepareStatement("SELECT ord.OrderId, ord.Date, ord.NumShares FROM Trade t INNER JOIN Orders ord ON ord.OrderId = t.OrderId INNER JOIN Person p ON p.SSN = t.ClientId WHERE t.ClientId LIKE ?");
+			st.setString(1, customerId);
+			ResultSet rs = st.executeQuery();
+			
 			/*Sample data begins*/
 			while(rs.next()) {
 				Order order = new Order();
@@ -216,15 +493,28 @@ public class OrderDao {
 		 */
         List<OrderPriceEntry> orderPriceHistory = new ArrayList<OrderPriceEntry>();
 
-        for (int i = 0; i < 10; i++) {
-            OrderPriceEntry entry = new OrderPriceEntry();
-            entry.setOrderId(orderId);
-            entry.setDate(new Date());
-            entry.setStockSymbol("aapl");
-            entry.setPricePerShare(150.0);
-            entry.setPrice(100.0);
-            orderPriceHistory.add(entry);
-        }
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("");
+			st.setString(1, orderId);
+			ResultSet rs = st.executeQuery();
+			
+			/*Sample data begins*/
+			while(rs.next()) {
+				OrderPriceEntry ope = new OrderPriceEntry();
+				ope.setOrderId();
+				ope.setDate(null);
+				ope.setPrice(0);
+				ope.setPricePerShare(0);
+				ope.setStockSymbol(orderId);
+				orderPriceHistory.add(ope);
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
         return orderPriceHistory;
     }
 }

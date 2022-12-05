@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -45,8 +46,12 @@ public class SalesDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL SalesReport(" + monthInt + ", " + yearInt + ")");
+			PreparedStatement st = con.prepareStatement("CALL SalesReport(?, ?)");
+			
+			st.setInt(1, monthInt);
+			st.setInt(2, yearInt);	
+			
+			ResultSet rs = st.executeQuery();
 			
 			while(rs.next()) {
 				RevenueItem item = new RevenueItem();

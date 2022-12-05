@@ -9,6 +9,8 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -66,9 +68,7 @@ public class EmployeeDao {
 		 * The sample code returns "success" by default.
 		 * You need to handle the database insertion of the employee details and return "success" or "failure" based on result of the database insertion.
 		 */
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
-		
+				
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
 		String startDate = employee.getStartDate(); //String -> Date
@@ -88,7 +88,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 
-			PreparedStatement st = con.prepareStatement("CALL AddEmployee(?, ?, ?);");
+			PreparedStatement st = con.prepareStatement("CALL AddEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 			st.setString(1, employeeID);
 			st.setString(2, startDate);
 			st.setFloat(3, hourlyRate);
@@ -125,7 +125,6 @@ public class EmployeeDao {
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
 		String startDate = employee.getStartDate();
-		LocalDate date = LocalDate.parse(startDate, formatter); //String -> Date
 		float hourlyRate = employee.getHourlyRate();
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
@@ -138,11 +137,38 @@ public class EmployeeDao {
 		int zipcode = location.getZipCode();
 		String telephone = employee.getTelephone();
 	
+		
+		
 		try {
+			// Convert date:
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date utilDate = format.parse(startDate);
+			java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+			
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+<<<<<<< Updated upstream
+			//Statement st = con.createStatement();
+			//ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
+			PreparedStatement st = con.prepareStatement("CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+=======
+			PreparedStatement st = con.prepareStatement("CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+>>>>>>> Stashed changes
+			
+			st.setString(1, employeeID);
+			st.setDate(2, sqlDate);
+			st.setFloat(3, hourlyRate);
+			st.setInt(4, (employee.getLevel() == "Employee") ? 0 : 1);
+			st.setString(5, lastName);
+			st.setString(6, firstName);
+			st.setString(7, email);
+			st.setString(8, address);
+			st.setInt(9, zipcode);
+			st.setString(10, city);
+			st.setString(11, state);
+			st.setString(12, telephone);
+			
+			ResultSet rs = st.executeQuery();
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -163,8 +189,10 @@ public class EmployeeDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
+			PreparedStatement st = con.prepareStatement("CALL DeleteEmployee(?)");
+			st.setString(1, employeeID);
+			ResultSet rs = st.executeQuery();
+			
 		}catch (Exception e) {
 			System.out.println(e);
 			return "failure";
@@ -188,16 +216,15 @@ public class EmployeeDao {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Employee");
+			ResultSet rs = st.executeQuery("select * from Employee e INNER JOIN Person p ON e.EmpId = p.SSN INNER JOIN Location l ON l.ZipCode = p.ZipCode;");
 		
-
 			/*Sample data begins*/
 			while(rs.next()) {
 				Employee employee = new Employee();
 				employee.setId(rs.getString("EmpID"));
 				employee.setStartDate(formatter.format(rs.getDate("StartDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("HourlyRate"));
-				employee.setLevel(rs.getString("isManager"));
+				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
@@ -225,23 +252,23 @@ public class EmployeeDao {
 		 * The students code to fetch data from the database based on "employeeID" will be written here
 		 * employeeID, which is the Employee's ID who's details have to be fetched, is given as method parameter
 		 * The record is required to be encapsulated as a "Employee" class object
-		 */
-		
+		 */		
 		Employee employee = new Employee();
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmater", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Employee where employeeID like \'%" + employeeID + "%\'");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("SELECT * FROM Employee e INNER JOIN Person p ON p.SSN = e.EmpId INNER JOIN Location l ON l.ZipCode = p.ZipCode WHERE EmpId = ? ");
+			st.setString(1, employeeID);
+			ResultSet rs = st.executeQuery();
 
 			/*Sample data begins*/
 			while(rs.next()) {
-				employee.setId(rs.getString("employeeID"));
-				employee.setStartDate(formatter.format(rs.getString("startDate"))); //Date -> String
-				employee.setHourlyRate(rs.getFloat("hourlyRate"));
-				employee.setLevel(rs.getString("isManager"));
+				employee.setEmployeeID(rs.getString("EmpID"));
+				employee.setStartDate((rs.getString("startDate"))); //Date -> String
+				employee.setHourlyRate(rs.getFloat("HourlyRate"));
+				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setEmail(rs.getString("email"));
@@ -258,7 +285,6 @@ public class EmployeeDao {
 		}catch (Exception e) {
 			System.out.println(e);
 		}
-		
 		return employee;
 	}
 	
@@ -269,7 +295,38 @@ public class EmployeeDao {
 		 * The record is required to be encapsulated as a "Employee" class object
 		 */
 		
-		return getDummyEmployee();
+		Employee employee = new Employee();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("CALL CustomerRepMostRevenue()");
+			ResultSet rs = st.executeQuery();
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				employee.setId(rs.getString("EmpId"));
+				employee.setStartDate((rs.getString("StartDate"))); //Date -> String
+				employee.setHourlyRate(rs.getFloat("HourlyRate"));
+				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
+				employee.setFirstName(rs.getString("FirstName"));
+				employee.setLastName(rs.getString("LastName"));
+				employee.setEmail(rs.getString("Email"));
+				employee.setSsn(rs.getString("SSN"));
+				employee.setAddress(rs.getString("Address"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				employee.setLocation(location);
+				employee.setTelephone(rs.getString("Telephone"));
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return employee;
 	}
 
 	public String getEmployeeID(String username) {
@@ -278,20 +335,20 @@ public class EmployeeDao {
 		 * username, which is the Employee's email address who's Employee ID has to be fetched, is given as method parameter
 		 * The Employee ID is required to be returned as a String
 		 */
-		
 		String result = "";	
-		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from Employee where email like \'%" + username + "%\'");
-		
 
-			/*Sample data begins*/
-			result = rs.getString("email");
-			
-			/*Sample data ends*/
+			PreparedStatement st = con.prepareStatement("select * from Employee e INNER JOIN Person p ON e.EmpId = p.SSN where email like ?");
+			st.setString(1, username);
+			ResultSet rs = st.executeQuery();
+		
+			if (rs.next()) {
+				result = rs.getString("EmpId");
+			}
+
+			return result;
 		}catch (Exception e) {
 			System.out.println(e);
 		}

@@ -36,7 +36,7 @@ CREATE TABLE Employee (
 	EmpId VARCHAR(20),
 	StartDate DATE,
 	HourlyRate INTEGER,
-	EmpRole INT DEFAULT 0,
+	EmpRole INT NOT NUll DEFAULT 0,
 	PRIMARY KEY (EmpId),
 	FOREIGN KEY (EmpId) REFERENCES Person (SSN)
 	ON DELETE NO ACTION
@@ -63,9 +63,9 @@ CREATE TABLE PriceHistory (
 	Date DATE,
 	PricePerShare DOUBLE,
 	CompanyName VARCHAR(20) NOT NULL,
-	Type VARCHAR(20) NOT NULL,
+	StockType VARCHAR(20) NOT NULL,
 	NumShares INT NOT NULL DEFAULT 1,
-	PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, Type, NumShares),
+	PRIMARY KEY (StockSymbol, Date, PricePerShare, CompanyName, StockType, NumShares),
 	FOREIGN KEY (StockSymbol) REFERENCES Stock (StockSymbol) );
 
 CREATE TABLE Account (
@@ -96,7 +96,7 @@ CREATE TABLE Transactions (
 CREATE TABLE Orders (
 	OrderId INTEGER NOT NULL AUTO_INCREMENT,
 	NumShares INTEGER,
-	PricePerShare DOUBLE,
+	PricePerShare DOUBLE,	
 	Date DATE,
 	Percentage DECIMAL(5,3),
 	PriceType VARCHAR(13) CHECK ( PriceType IN ('Market', 'MarketOnClose', 'TrailingStop', 'HiddenStop') ),
@@ -137,17 +137,20 @@ CREATE PROCEDURE insert_dummy_data ()
 BEGIN
 # INSERT DEMO DATA CODE 
 
+INSERT INTO Location VALUES(0, "", "");
 INSERT INTO Location VALUES (11790, 'Stony Brook', 'NY');
 INSERT INTO Location VALUES (93536, 'Los Angeles', 'CA');
 INSERT INTO Location VALUES (11794, 'Stony Brook', 'NY');
 
-INSERT INTO Person VALUES ('111111111', 'Yang', 'Shang', 'syang@cs.sunysb.edu', '123 Success Street', 11790, '5166328959');
+INSERT INTO Person VALUES ('0', "", "", "", "", 0, "");
+INSERT INTO Person VALUES ('111111111', 'Yang', 'Shang', 'customer@email.com', '123 Success Street', 11790, '5166328959');
 INSERT INTO Person VALUES ('222222222', 'Du', 'Victor', 'vicdu@cs.sunysb.edu', '456 Fortune Road', 11790, '5166324360');
 INSERT INTO Person VALUES ('333333333', 'Smith', 'John', 'jsmith@ic.sunysb.edu', '789 Peace Blvd', 93536, '3154434321');
 INSERT INTO Person VALUES ('444444444', 'Philip', 'Lewis', 'pml@cs.sunysb.edu', '135 Knowledge Lane', 11794, '5166668888');
-INSERT INTO Person VALUES ('123456789', 'Smith', 'David', 'dsmith@cs.sunysb.edu', '123 College road', 11790, '5162152345');
-INSERT INTO Person VALUES ('789123456', 'Warren', 'David', 'dwarren@cs.sunysb.edu', '456 Sunken Street', 11790, '5162152345');
+INSERT INTO Person VALUES ('123456789', 'Smith', 'David', 'employee@email.com', '123 College road', 11790, '5162152345');
+INSERT INTO Person VALUES ('789123456', 'Warren', 'David', 'manager@email.com', '456 Sunken Street', 11790, '5162152345');
 
+INSERT INTO Employee VALUEs ('0', '2000-01-01', 0, 0);
 INSERT INTO Employee VALUES ('123456789', '2005-11-01', 60, 0);
 INSERT INTO Employee VALUES ('789123456', '2005-11-01', 50, 1);
 
@@ -162,6 +165,8 @@ INSERT INTO Clients VALUES ('444444444', '6789234567892345', 1);
 
 INSERT INTO Account VALUES ('444444444', 1, '2006-10-01');
 INSERT INTO Account VALUES ('222222222', 1, '2006-10-15');
+INSERT INTO Account VALUES ('111111111', 1, '2006-10-15');
+INSERT INTO Account VALUES ('333333333', 1, '2006-10-15');
 
 INSERT INTO StockPortfolio VALUES ('444444444', 1, 'F', 100);
 INSERT INTO StockPortfolio VALUES ('222222222', 1, 'IBM', 50);
@@ -174,19 +179,35 @@ INSERT INTO Orders VALUES (4, 24, 90, '2022-11-11', NULL, 'HiddenStop', 'Sell');
 INSERT INTO Orders VALUES (5, 5, 87.53, '2022-11-11', NULL, 'HiddenStop', 'Sell');
 INSERT INTO Orders VALUES (6, 37, 79.57, '2022-11-12', NULL, 'HiddenStop', 'Sell');
 INSERT INTO Orders VALUES (7, 71, 40.32, '2022-11-15', NULL, 'HiddenStop', 'Sell');
+INSERT INTO Orders VALUES (8, 25, 70.89, '2022-12-01', NULL, 'MarketOnClose', 'Buy');
+INSERT INTO Orders VALUES (9, 15, 81, '2022-12-02', NULL, 'Market', 'Sell');
+INSERT INTO Orders VALUES (10, 200, 10.40, '2022-12-03', NULL, 'Market', 'Buy');
+INSERT INTO Orders VALUES (11, 50, 19, '2022-12-04', NULL, 'Market', 'Sell');
 
 INSERT INTO Transactions VALUES (1, 95.66, '2022-11-07', 25.51);
 INSERT INTO Transactions VALUES (2, 45, '2022-11-07', 90);
 INSERT INTO Transactions VALUES (3, 75, '2022-11-08', 50);
+INSERT INTO Transactions VALUES (4, 80, '2022-12-01', 70.89);
+INSERT INTO Transactions VALUES (5, 50, '2022-12-02', 81);
+INSERT INTO Transactions VALUES (6, 100, '2022-12-03', 10.40);
+INSERT INTO Transactions VALUES (7, 85, '2022-12-04', 19);
 
 INSERT INTO Trade VALUES (1, '444444444', '123456789', 1, 1, 'GM');
 INSERT INTO Trade VALUES (1, '222222222', '123456789', 2, 2, 'IBM');
 INSERT INTO Trade VALUES (1, '444444444', '123456789', 3, 3, 'GM');
+INSERT INTO Trade VALUES (1, '333333333', '789123456', 4, 8, 'F');
+INSERT INTO Trade VALUES (1, '333333333', '789123456', 5, 9, 'F');
+INSERT INTO Trade VALUES (1, '444444444', '789123456', 6, 10, 'IBM');
+INSERT INTO Trade VALUES (1, '444444444', '789123456', 7, 11, 'IBM');
 
 INSERT INTO PriceHistory VALUES ('F', '2022-09-15', 9.00, 'Ford', 'automotive', 750);
 INSERT INTO PriceHistory VALUES ('GM', '2022-10-08', 34.23, 'General Motors', 'automotive', 1000);
 INSERT INTO PriceHistory VALUES ('IBM', '2022-11-11', 90.23, 'IBM', 'computer', 500);
 INSERT INTO PriceHistory VALUES ('GM', '2022-12-25', 35.01, 'General Motors', 'automotive', 1000);
+
+INSERT INTO LoginInfo VALUES ('customer@email.com', '202cb962ac59075b964b07152d234b70', 0);
+INSERT INTO LoginInfo VALUES ('employee@email.com', '202cb962ac59075b964b07152d234b70', 1);
+INSERT INTO LoginInfo VALUES ('manager@email.com', '202cb962ac59075b964b07152d234b70', 2);
 
 END$$
 DELIMITER ;
@@ -206,15 +227,17 @@ BEGIN
 
 	# Update SharePrice in SharePrice history table
     START TRANSACTION;
-	INSERT INTO PriceHistory (StockSymbol, Date, PricePerShare, CompanyName) VALUES
+	INSERT INTO PriceHistory (StockSymbol, Date, PricePerShare, CompanyName, StockType, NumShares) VALUES
     ((SELECT StockSymbol FROM Stock WHERE StockSymbol = InputStock), 
     NOW(), 
     (SELECT PricePerShare FROM Stock WHERE StockSymbol = InputStock),
     (SELECT CompanyName FROM Stock WHERE StockSymbol = InputStock),
+    (SELECT Type FROM Stock WHERE StockSymbol = InputStock),
+    (SELECT NumShares FROM Stock WHERE StockSymbol = InputStock)
     );
 	
     UPDATE Stock 
-	SET SharePrice = Price
+	SET PricePerShare = Price
 	WHERE StockSymbol = InputStock;
     COMMIT;
 END$$
@@ -227,7 +250,6 @@ CREATE PROCEDURE AddEmployee(
 	IN nId VARCHAR(20),
 	IN nStartDate Date,
 	IN nHourlyRate INTEGER,
-	IN nRole VARCHAR(20),
 	IN nLastName VARCHAR(20),
 	IN nFirstName VARCHAR(20),
 	IN nEmail VARCHAR(32),
@@ -246,7 +268,7 @@ BEGIN
 	START TRANSACTION;
     INSERT INTO Location VALUES (nZipCode, nCity, nState);
 	INSERT INTO Person VALUES (nId, nLastName, nFirstName, nEmail, nAddress, nZipCode, nTelephone);
-    INSERT INTO Employee VALUES (nId, nStartDate, nHourlyRate, nRole);
+    INSERT INTO Employee VALUES (nId, nStartDate, nHourlyRate, DEFAULT);
 	COMMIT;
 END$$
 DELIMITER ;
@@ -316,6 +338,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+CALL SalesReport(11, 2022);
 
 # Produce a comprehensive listing of all stocks
 DELIMITER $$
@@ -434,15 +457,14 @@ DELIMITER $$
 CREATE PROCEDURE CustomerRepMostRevenue()
 BEGIN
 	START TRANSACTION;
-		SELECT t.BrokerId,
-        (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
+		SELECT *
         FROM Trade as t
         INNER JOIN Transactions AS trans ON trans.TxnId = t.TransactionId
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
-        ORDER BY 'REVENUE' DESC
-        LIMIT 1;
+        INNER JOIN Employee e ON e.EmpId = t.BrokerId
+        INNER JOIN Person p ON p.SSN = e.EmpId
+        INNER JOIN Location l ON l.ZipCode = p.ZipCode
+        ORDER BY 'REVENUE' DESC;
 	COMMIT;
 END$$
 DELIMITER ;
@@ -453,13 +475,13 @@ DELIMITER $$
 CREATE PROCEDURE CustomerMostRevenue()
 BEGIN
 	START TRANSACTION;
-		SELECT t.ClientId,
-        (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
+		SELECT *
         FROM Trade as t
         INNER JOIN Transactions AS trans ON trans.TxnId = t.TransactionId
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
+        INNER JOIN Clients c ON c.ClientId = t.ClientId
+		INNER JOIN Person p ON p.SSN = c.ClientId
+        INNER JOIN Location l ON l.ZipCode = p.ZipCode
         ORDER BY 'REVENUE' DESC
         LIMIT 1;
 	COMMIT;
@@ -546,10 +568,10 @@ BEGIN
 
 	INSERT INTO Trade VALUES (
 		AccId,	ClientId, BrokerId, @transaction_id, @order_id, StockSym
-	)
+	);
 
 	COMMIT;
-END;
+END$$
 DELIMITER ;
 
 
@@ -584,7 +606,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-SELECT * FROM Person;
 
 DELIMITER $$
 CREATE PROCEDURE UpdateCustomer(
@@ -598,7 +619,7 @@ CREATE PROCEDURE UpdateCustomer(
 	IN nZipCode INTEGER,
 	IN nCity VARCHAR(20),
 	IN nState VARCHAR(20),
-	IN nTelephone VARCHAR(20))
+	IN nTelephone VARCHAR(20)
     )
 BEGIN
 	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
@@ -628,8 +649,9 @@ BEGIN
 	WHERE ClientId = nClientId;
 
 	COMMIT;
-END;
-DELIMITER $$
+END $$
+DELIMITER ;
+
 
 DELIMITER $$
 CREATE PROCEDURE DeleteCustomer(IN nClientId VARCHAR(20))
@@ -648,7 +670,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-SELECT * From Clients;
 
 DELIMITER $$
 CREATE PROCEDURE CustomerMailingList (
@@ -666,26 +687,8 @@ BEGIN
 	SELECT Email From Clients WHERE ClientId IN (SELECT ClientId FROM Trade WHERE BrokerId = bId);
 
 	COMMIT;
-END;
-
-SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode
-
-CREATE PROCEDURE SuggestStock (
-	IN cId INTEGER
-)
-BEGIN
-	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
-	BEGIN
-		ROLLBACK;
-		RESIGNAL;
-	END;
-   	 
-	START TRANSACTION;
-		 
-	SELECT StockSymbol FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
-		 
-	COMMIT;
-END;
+END$$
+DELIMITER ;
 
 
 # CUSTOMER TRANSACTIONS
@@ -834,6 +837,8 @@ BEGIN
 END $$
 DELIMITER ;
 
+CALL Best_Seller();
+
 DELIMITER $$
 CREATE PROCEDURE Add_Login(
 	IN UserEmail VARCHAR(255),
@@ -860,7 +865,69 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE SubmitOrder(
+    IN NumShares INT,
+    IN PricePerShare DOUBLE,
+	IN Date Date,
+    IN Percentage DECIMAL(5,3),
+    IN PriceType VARCHAR(13),
+    IN OrderType VARCHAR(4),
+	IN AccountNum INT,
+    IN ClientId VARCHAR(20),
+	IN BrokerId VARCHAR(20),
+    IN StockSymbol VARCHAR(20)
+    )
+BEGIN
+	DECLARE exit handler FOR SQLEXCEPTION, SQLWARNING
+	BEGIN
+		ROLLBACK;
+		RESIGNAL;
+	END;
+    
+	START TRANSACTION;
+    IF Percentage = 0 THEN
+		INSERT INTO Orders VALUES (NULL, NumShares, PricePerShare, Date, NULL, PriceType, OrderType);
+	ELSE
+		INSERT INTO Orders VALUES (NULL, NumShares, PricePerShare, Date, Percentage, PriceType, OrderType);
+	END IF;
 
-CALL SetSharePrice(1000, 'F');
+	SET @order_id = (SELECT LAST_INSERT_ID());
+    
+    IF PriceType='Market' THEN
+		INSERT INTO Transactions VALUES (
+			NULL,
+			(SELECT NumShares*PricePerShare*0.05 AS Fee FROM Orders o WHERE o.OrderId = @order_id),
+			NOW(),
+			(SELECT PricePerShare FROM Orders o WHERE o.OrderId = @order_id)
+			);
+	ELSE
+		INSERT INTO Transaction VALUES (NULL,NULL,NULL,NULL);
+	END IF;
+    
+	SET @transaction_id = (SELECT LAST_INSERT_ID());
+
+	INSERT INTO Trade VALUES (AccountNum, ClientId, BrokerId, @transaction_id, @order_id, StockSymbol);
+    
+    COMMIT;
+END $$
+DELIMITER ;
+
 SELECT * FROM Stock;
+SELECT * FROM PriceHistory;
+SELECT * FROM Clients;
+SELECT * FROM Employee;
+SELECT * FROM Person;
+SELECT * FROM Trade;
+SELECT * FROM LoginInfo;
+SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode;
 
+
+DELIMITER $$
+CREATE PROCEDURE SuggestStock (
+	IN cId VARCHAR(20)
+)
+BEGIN
+	SELECT * FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
+END$$
+DELIMITER ;

@@ -18,7 +18,7 @@
             <label for="customerId">Customer:</label>
             <select class="form-control" name="customerId">
                 <c:forEach items="${customers}" var="cd">
-                    <option value="${cd.id}"> <c:out value = "${cd.firstName} ${cd.lastName}"/></option>
+                    <option value="${cd.clientId}"> <c:out value = "${cd.firstName} ${cd.lastName}"/></option>
                 </c:forEach>
             </select>
         </div>
