@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import java.security.MessageDigest;
+import java.math.BigInteger;
+
 import model.Login;
 import model.Stock;
 
@@ -25,11 +28,48 @@ public class LoginDao {
 		 * Query to verify the username and password and fetch the role of the user, must be implemented
 		 */
 		
-		/*Sample data begins*/
+		if (password.equals("")) {
+			Login l = new Login();
+			l.setRole(role);
+			l.setUsername(username);
+		}
+		
 		Login login = new Login();
 		login.setRole(role);
-		return login;
-		/*Sample data ends*/
+		login.setUsername(username);
+		
+		try {
+			// MD5 Encryption...
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] messageDigest = md.digest(password.getBytes());
+			BigInteger number = new BigInteger(1, messageDigest);
+			String hashtext = number.toString(16);
+			
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("SELECT * FROM LoginInfo WHERE UserPass=? AND Email=?");
+			
+			st.setString(1, hashtext);
+			st.setString(2, username);
+			
+			ResultSet rs = st.executeQuery();
+			
+			if (rs.next()) {
+				if (rs.getInt("UserRole") == 0 && role.equals("customer")) {
+					return login;
+				} else if (rs.getInt("UserRole") == 2 && role.equals("manager")) {
+					return login;
+				} else if (rs.getInt("UserRole") == 1 && role.equals("customerRepresentative")) {
+					return login;
+				}
+				return null;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
 		
 	}
 	
@@ -42,19 +82,33 @@ public class LoginDao {
 		 * Return "success" on successful insertion of a new user
 		 * Return "failure" for an unsuccessful database operation
 		 */
-		
+		System.out.println("this was ran");
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			PreparedStatement st = con.prepareStatement("CALL Add_Login(?, ?, ?)");
 			
+			// MD5 Encryption...
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] messageDigest = md.digest(login.getPassword().getBytes());
+			BigInteger number = new BigInteger(1, messageDigest);
+			String hashtext = number.toString(16);
+			
+			int role = 0;
+			if (login.getRole().equals("Employee")) {
+				role = 1;
+			} else if (login.getRole().equals("Manager")){
+				role = 2;
+			}
+			
 			st.setString(1, login.getUsername());
-			st.setString(2, login.getRole());
-			st.setInt(3, 0);
+			st.setString(2, hashtext);
+			st.setInt(3, role);
 			
 			ResultSet rs = st.executeQuery();
 		}catch (Exception e) {
 			System.out.println(e);
+			return "failure";
 		}
 		
 		/*Sample data begins*/

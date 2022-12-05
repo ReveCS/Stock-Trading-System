@@ -143,12 +143,12 @@ INSERT INTO Location VALUES (93536, 'Los Angeles', 'CA');
 INSERT INTO Location VALUES (11794, 'Stony Brook', 'NY');
 
 INSERT INTO Person VALUES ('0', "", "", "", "", 0, "");
-INSERT INTO Person VALUES ('111111111', 'Yang', 'Shang', 'syang@cs.sunysb.edu', '123 Success Street', 11790, '5166328959');
+INSERT INTO Person VALUES ('111111111', 'Yang', 'Shang', 'customer@email.com', '123 Success Street', 11790, '5166328959');
 INSERT INTO Person VALUES ('222222222', 'Du', 'Victor', 'vicdu@cs.sunysb.edu', '456 Fortune Road', 11790, '5166324360');
 INSERT INTO Person VALUES ('333333333', 'Smith', 'John', 'jsmith@ic.sunysb.edu', '789 Peace Blvd', 93536, '3154434321');
 INSERT INTO Person VALUES ('444444444', 'Philip', 'Lewis', 'pml@cs.sunysb.edu', '135 Knowledge Lane', 11794, '5166668888');
-INSERT INTO Person VALUES ('123456789', 'Smith', 'David', 'dsmith@cs.sunysb.edu', '123 College road', 11790, '5162152345');
-INSERT INTO Person VALUES ('789123456', 'Warren', 'David', 'dwarren@cs.sunysb.edu', '456 Sunken Street', 11790, '5162152345');
+INSERT INTO Person VALUES ('123456789', 'Smith', 'David', 'employee@email.com', '123 College road', 11790, '5162152345');
+INSERT INTO Person VALUES ('789123456', 'Warren', 'David', 'manager@email.com', '456 Sunken Street', 11790, '5162152345');
 
 INSERT INTO Employee VALUEs ('0', '2000-01-01', 0, 0);
 INSERT INTO Employee VALUES ('123456789', '2005-11-01', 60, 0);
@@ -204,6 +204,10 @@ INSERT INTO PriceHistory VALUES ('F', '2022-09-15', 9.00, 'Ford', 'automotive', 
 INSERT INTO PriceHistory VALUES ('GM', '2022-10-08', 34.23, 'General Motors', 'automotive', 1000);
 INSERT INTO PriceHistory VALUES ('IBM', '2022-11-11', 90.23, 'IBM', 'computer', 500);
 INSERT INTO PriceHistory VALUES ('GM', '2022-12-25', 35.01, 'General Motors', 'automotive', 1000);
+
+INSERT INTO LoginInfo VALUES ('customer@email.com', '202cb962ac59075b964b07152d234b70', 0);
+INSERT INTO LoginInfo VALUES ('employee@email.com', '202cb962ac59075b964b07152d234b70', 1);
+INSERT INTO LoginInfo VALUES ('manager@email.com', '202cb962ac59075b964b07152d234b70', 2);
 
 END$$
 DELIMITER ;
@@ -455,6 +459,7 @@ BEGIN
 		SELECT t.BrokerId,
 		p.*,
         e.*,
+        l.*,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
@@ -463,6 +468,7 @@ BEGIN
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
         INNER JOIN Employee e ON e.EmpId = t.BrokerId
         INNER JOIN Person p ON p.SSN = e.EmpId
+        INNER JOIN Location l ON l.ZipCode = p.ZipCode
         ORDER BY 'REVENUE' DESC;
 	COMMIT;
 END$$
@@ -477,6 +483,7 @@ BEGIN
 	START TRANSACTION;
 		SELECT c.*,
         p.*,
+        l.*,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
@@ -485,7 +492,7 @@ BEGIN
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
         INNER JOIN Clients c ON c.ClientId = t.ClientId
 		INNER JOIN Person p ON p.SSN = c.ClientId
-
+        INNER JOIN Location l ON l.ZipCode = p.ZipCode
         ORDER BY 'REVENUE' DESC
         LIMIT 1;
 	COMMIT;
@@ -924,6 +931,7 @@ SELECT * FROM Clients;
 SELECT * FROM Employee;
 SELECT * FROM Person;
 SELECT * FROM Trade;
+SELECT * FROM LoginInfo;
 SELECT c.*, acc.*, p.*, l.City, l.State FROM Clients c INNER JOIN Account acc ON acc.ClientId = c.ClientId INNER JOIN Person p ON p.SSN = c.ClientId JOIN Location l ON l.ZipCode = p.ZipCode;
 
 
