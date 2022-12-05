@@ -108,7 +108,7 @@ public class CustomerDao {
 
 			/*Sample data begins*/
 			while(rs.next()) {
-				customer.setClientId(rs.getString("ClientId"));
+				customer.setClientId(rs.getString("SSN"));
 				customer.setCreditCard((rs.getString("CreditCardNumber"))); //Date -> String
 				customer.setRating(rs.getInt("Rating"));
 				customer.setFirstName(rs.getString("FirstName"));

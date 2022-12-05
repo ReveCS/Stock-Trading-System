@@ -455,6 +455,7 @@ BEGIN
 		SELECT t.BrokerId,
 		p.*,
         e.*,
+        l.*,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
@@ -463,6 +464,7 @@ BEGIN
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
         INNER JOIN Employee e ON e.EmpId = t.BrokerId
         INNER JOIN Person p ON p.SSN = e.EmpId
+        INNER JOIN Location l ON l.ZipCode = p.ZipCode
         ORDER BY 'REVENUE' DESC;
 	COMMIT;
 END$$
@@ -477,6 +479,7 @@ BEGIN
 	START TRANSACTION;
 		SELECT c.*,
         p.*,
+        l.*,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
@@ -485,7 +488,7 @@ BEGIN
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
         INNER JOIN Clients c ON c.ClientId = t.ClientId
 		INNER JOIN Person p ON p.SSN = c.ClientId
-
+        INNER JOIN Location l ON l.ZipCode = p.ZipCode
         ORDER BY 'REVENUE' DESC
         LIMIT 1;
 	COMMIT;
