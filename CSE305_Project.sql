@@ -150,7 +150,7 @@ INSERT INTO Person VALUES ('444444444', 'Philip', 'Lewis', 'pml@cs.sunysb.edu', 
 INSERT INTO Person VALUES ('123456789', 'Smith', 'David', 'dsmith@cs.sunysb.edu', '123 College road', 11790, '5162152345');
 INSERT INTO Person VALUES ('789123456', 'Warren', 'David', 'dwarren@cs.sunysb.edu', '456 Sunken Street', 11790, '5162152345');
 
-INSERT INTO Employee VALUEs ('0', '0000-00-00', 0, 0);
+INSERT INTO Employee VALUEs ('0', '2000-01-01', 0, 0);
 INSERT INTO Employee VALUES ('123456789', '2005-11-01', 60, 0);
 INSERT INTO Employee VALUES ('789123456', '2005-11-01', 50, 1);
 
