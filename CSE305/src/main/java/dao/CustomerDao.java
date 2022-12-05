@@ -113,9 +113,11 @@ public class CustomerDao {
 		Customer customer = new Customer();
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
+		System.out.println("%"+customerID);
+		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			PreparedStatement st = con.prepareStatement("SELECT acc.ClientId, c.CreditCardNumber, c.Rating, acc.AccNum, acc.DateOpened FROM Clients c INNER JOIN Account acc ON c.ClientId = acc.ClientId WHERE c.ClientId LIKE ?");
 			st.setString(1, customerID);
 			ResultSet rs = st.executeQuery();
@@ -123,11 +125,13 @@ public class CustomerDao {
 			/*Sample data begins*/
 			while(rs.next()) {
 				customer.setClientId(rs.getString("ClientId"));
-				customer.setCreditCard(Integer.toString(rs.getInt("CreditCardNumber")));
+				customer.setCreditCard(String.valueOf(rs.getLong("CreditCardNumber")));
 				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
 				customer.setAccountNumber(rs.getInt("AccNum"));
 				customer.setRating(rs.getInt("Rating"));
 			}
+			
+		System.out.println(customer.getClientId());
 			
 			/*Sample data ends*/
 		}catch (Exception e) {

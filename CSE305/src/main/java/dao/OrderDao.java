@@ -131,7 +131,7 @@ public class OrderDao {
 	    	
 	    	clientId = customer.getClientId();
 	    	accountNum = customer.getAccountNumber();
-	    	
+
 	    	price = stock.getPrice();
 	    	symbol = stock.getSymbol();
 	    	
