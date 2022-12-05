@@ -45,7 +45,7 @@ public class AddOrderController extends HttpServlet {
         String employeeId;
         Employee employee = null;
         String customerId = request.getParameter("customerId");
-        System.out.println("?" + customerId);
+
         // submitted by customer
         if (customerId == null) {
             customerId = (String) request.getSession(false).getAttribute("customerID");
@@ -56,6 +56,7 @@ public class AddOrderController extends HttpServlet {
             employeeId = (String) request.getSession(false).getAttribute("employeeID");
             employee = employeeDao.getEmployee(employeeId);
         }
+
         String numShares = request.getParameter("orderNumShares");
         String type = request.getParameter("orderType");
         String buySellType = request.getParameter("orderBuySellType");

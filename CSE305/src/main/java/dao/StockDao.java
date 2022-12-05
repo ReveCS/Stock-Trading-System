@@ -111,7 +111,6 @@ public class StockDao {
 		 * Return stock matching symbol
 		 */
     	Stock result = new Stock();
-    	
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
@@ -123,14 +122,15 @@ public class StockDao {
 			
 			ResultSet rs = st.executeQuery();
 			
-			/*Sample data begins*/
-		    result.setSymbol(rs.getString("StockSymbol"));
-		    result.setName(rs.getString("CompanyName"));
-		    result.setType(rs.getString("Type"));
-		    result.setPrice(rs.getFloat("PricePerShare"));
-		    result.setNumShares(rs.getInt("NumShares"));
-			
-			/*Sample data ends*/
+			if (rs.next()) {
+				result.setSymbol(rs.getString("StockSymbol"));
+			    result.setName(rs.getString("CompanyName"));
+			    result.setType(rs.getString("Type"));
+			    result.setPrice(rs.getFloat("PricePerShare"));
+			    result.setNumShares(rs.getInt("NumShares"));
+			}
+
+			return result;
 		}catch (Exception e) {
 			System.out.println(e);
 		}
