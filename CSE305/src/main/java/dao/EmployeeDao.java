@@ -269,7 +269,7 @@ public class EmployeeDao {
 
 			/*Sample data begins*/
 			while(rs.next()) {
-				employee.setId(rs.getString("EmpID"));
+				employee.setEmployeeID(rs.getString("EmpID"));
 				employee.setStartDate((rs.getString("startDate"))); //Date -> String
 				employee.setHourlyRate(rs.getFloat("HourlyRate"));
 				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
@@ -341,20 +341,19 @@ public class EmployeeDao {
 		 * The Employee ID is required to be returned as a String
 		 */
 		String result = "";	
-		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 
-			PreparedStatement st = con.prepareStatement("select * from Employee where email like ?");
+			PreparedStatement st = con.prepareStatement("select * from Employee e INNER JOIN Person p ON e.EmpId = p.SSN where email like ?");
 			st.setString(1, username);
 			ResultSet rs = st.executeQuery();
 		
+			if (rs.next()) {
+				result = rs.getString("EmpId");
+			}
 
-			/*Sample data begins*/
-			result = rs.getString("email");
-			
-			/*Sample data ends*/
+			return result;
 		}catch (Exception e) {
 			System.out.println(e);
 		}
