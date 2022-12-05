@@ -418,6 +418,7 @@ public class CustomerDao {
 			while(rs.next()) {
 				Customer customer = new Customer();
 				customer.setClientId(rs.getString("ClientId"));
+				customer.setId(rs.getString("ClientId"));
 //				customer.setCreditCard(rs.getString("CreditCardNumber"));
 //				customer.setAccountCreationTime(formatter.format(rs.getDate("DateOpened")));
 //				customer.setAccountNumber(rs.getInt("AccNum"));
