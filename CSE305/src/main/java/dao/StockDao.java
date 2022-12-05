@@ -292,6 +292,7 @@ public class StockDao {
 		 * The students code to fetch data from the database will be written here
 		 * Return stock suggestions for given "customerId"
 		 */
+<<<<<<< Updated upstream
     	
     	List<Stock> result = new ArrayList<Stock>();
     	System.out.println(customerID);
@@ -318,7 +319,33 @@ public class StockDao {
  		}
          
         return result;
+=======
+    	List<Stock> result = new ArrayList<Stock>();
 
+        try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("CALL SuggestStock(?)");
+			st.setString(1, customerID);
+			ResultSet rs = st.executeQuery();
+			
+			
+			while(rs.next()) {
+				Stock stock = new Stock();
+				stock.setSymbol(rs.getString("StockSymbol"));
+				stock.setName(rs.getString("CompanyName"));
+				stock.setType(rs.getString("StockType"));
+				stock.setPrice(rs.getDouble("PricePerShare"));
+				stock.setNumShares(rs.getInt("NumShares"));
+				result.add(stock);
+			}
+>>>>>>> Stashed changes
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+        
+        return result;
     }
 
     public List<Stock> getStockPriceHistory(String stockSymbol) {

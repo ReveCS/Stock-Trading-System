@@ -913,6 +913,9 @@ CREATE PROCEDURE SuggestStock (
 	IN cId VARCHAR(20)
 )
 BEGIN
-	SELECT StockSymbol FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
+	SELECT * FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
 END$$
 DELIMITER ;
+
+CALL SuggestStock("444444444");
+
