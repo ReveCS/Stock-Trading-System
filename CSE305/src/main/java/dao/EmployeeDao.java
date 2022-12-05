@@ -330,7 +330,6 @@ public class EmployeeDao {
 			System.out.println(e);
 		}
 		
-		System.out.println(employee.getSsn());
 		return employee;
 	}
 
