@@ -71,15 +71,30 @@ public class CustomerDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT ");
+			ResultSet rs = st.executeQuery("SELECT * FROM Clients c INNER JOIN Person p ON c.ClientId = p.SSN INNER JOIN Location l ON l.ZipCode = p.ZipCode ");
 
 			/*Sample data begins*/
 			while(rs.next()) {
 				Customer customer = new Customer();
 				
-//				customers.add();
+				customer.setClientId(rs.getString("SSN"));
+				customer.setCreditCard((rs.getString("CreditCardNumber"))); //Date -> String
+				customer.setRating(rs.getInt("Rating"));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setEmail(rs.getString("Email"));
+				customer.setSsn(rs.getString("SSN"));
+				customer.setAddress(rs.getString("Address"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				customer.setLocation(location);
+				customer.setTelephone(rs.getString("Telephone"));
+				
+				customers.add(customer);
 			}
 			
 			/*Sample data ends*/
