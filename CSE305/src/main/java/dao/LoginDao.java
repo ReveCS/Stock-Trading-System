@@ -82,7 +82,7 @@ public class LoginDao {
 		 * Return "success" on successful insertion of a new user
 		 * Return "failure" for an unsuccessful database operation
 		 */
-		System.out.println("this was ran");
+
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
