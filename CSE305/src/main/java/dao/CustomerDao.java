@@ -108,7 +108,7 @@ public class CustomerDao {
 
 			/*Sample data begins*/
 			while(rs.next()) {
-				customer.setClientId(rs.getString("ClientId"));
+				customer.setClientId(rs.getString("SSN"));
 				customer.setCreditCard((rs.getString("CreditCardNumber"))); //Date -> String
 				customer.setRating(rs.getInt("Rating"));
 				customer.setFirstName(rs.getString("FirstName"));
@@ -235,10 +235,9 @@ public class CustomerDao {
 		 * The sample code returns "success" by default.
 		 * You need to handle the database insertion of the customer details and return "success" or "failure" based on result of the database insertion.
 		 */
-		
+		System.out.println(customer.getSsn());
 		/*Sample data begins*/
-		String clientId = customer.getClientId();
-		clientId = "Information";
+		String clientId = customer.getSsn();
 		String creditCard = customer.getCreditCard();
 		int rating = customer.getRating();
 		String firstName = customer.getFirstName();
