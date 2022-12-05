@@ -208,7 +208,7 @@ public class CustomerDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stonksmaster", "root", "root");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			PreparedStatement st = con.prepareStatement("SELECT c.ClientId, p.Email FROM Clients c INNER JOIN Person p ON c.ClientId = p.SSN WHERE p.Email LIKE ?");
 			st.setString(1, email);
 			ResultSet rs = st.executeQuery();
@@ -217,6 +217,8 @@ public class CustomerDao {
 			while(rs.next()) {
 				result = rs.getString("ClientId");
 			}
+			
+			return result;
 			
 			/*Sample data ends*/
 		}catch (Exception e) {
