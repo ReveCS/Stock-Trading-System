@@ -232,7 +232,7 @@ BEGIN
     NOW(), 
     (SELECT PricePerShare FROM Stock WHERE StockSymbol = InputStock),
     (SELECT CompanyName FROM Stock WHERE StockSymbol = InputStock),
-    (SELECT StockType FROM Stock WHERE StockSymbol = InputStock),
+    (SELECT Type FROM Stock WHERE StockSymbol = InputStock),
     (SELECT NumShares FROM Stock WHERE StockSymbol = InputStock)
     );
 	
