@@ -33,8 +33,9 @@ public class GetSummaryListingController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String keyword = request.getParameter("searchKeyword");
+		String keywordType = request.getParameter("keywordType");
 		SalesDao salesDao = new SalesDao();
-		List<RevenueItem> items = salesDao.getSummaryListing(keyword);
+		List<RevenueItem> items = salesDao.getSummaryListing(keyword, keywordType);
 		
 		request.setAttribute("items", items);
 		request.setAttribute("heading", "Summary Listing of revenue generated - " + keyword);

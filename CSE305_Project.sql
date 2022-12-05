@@ -400,9 +400,11 @@ CREATE PROCEDURE StockRevenueSummary(Stock VARCHAR(20))
 BEGIN
 	START TRANSACTION;
 		SELECT t.StockId,
+        t.AccountId,
         ord.OrderType,
         ord.NumShares,
         trans.PricePerShare,
+        trans.Date,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
@@ -414,13 +416,18 @@ BEGIN
 END$$
 DELIMITER ;
 
-
 # Input Stock type (i.e 'computer')
 DELIMITER $$
 CREATE PROCEDURE StockTypeRevenueSummary(StockType VARCHAR(20) )
 BEGIN
 	START TRANSACTION;
 		SELECT st.Type,
+        t.StockId,
+        t.AccountId,
+        ord.OrderType,
+        ord.NumShares,
+        trans.PricePerShare,
+        trans.Date,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
@@ -433,13 +440,18 @@ BEGIN
 END$$
 DELIMITER ;
 
-
 # Input Customer ID (i.e 444444444)	
 DELIMITER $$
 CREATE PROCEDURE CustomerRevenueSummary(Customer VARCHAR(20))
 BEGIN
 	START TRANSACTION;
 		SELECT t.ClientId,
+        t.StockId,
+        t.AccountId,
+        ord.OrderType,
+        ord.NumShares,
+        trans.PricePerShare,
+        trans.Date,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
@@ -450,7 +462,6 @@ BEGIN
 	COMMIT;
 END$$
 DELIMITER ;
-
 
 # Determine which customer representative generated most total revenue
 DELIMITER $$
