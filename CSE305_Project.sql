@@ -179,14 +179,26 @@ INSERT INTO Orders VALUES (4, 24, 90, '2022-11-11', NULL, 'HiddenStop', 'Sell');
 INSERT INTO Orders VALUES (5, 5, 87.53, '2022-11-11', NULL, 'HiddenStop', 'Sell');
 INSERT INTO Orders VALUES (6, 37, 79.57, '2022-11-12', NULL, 'HiddenStop', 'Sell');
 INSERT INTO Orders VALUES (7, 71, 40.32, '2022-11-15', NULL, 'HiddenStop', 'Sell');
+INSERT INTO Orders VALUES (8, 25, 70.89, '2022-12-01', NULL, 'MarketOnClose', 'Buy');
+INSERT INTO Orders VALUES (9, 15, 81, '2022-12-02', NULL, 'Market', 'Sell');
+INSERT INTO Orders VALUES (10, 200, 10.40, '2022-12-03', NULL, 'Market', 'Buy');
+INSERT INTO Orders VALUES (11, 50, 19, '2022-12-04', NULL, 'Market', 'Sell');
 
 INSERT INTO Transactions VALUES (1, 95.66, '2022-11-07', 25.51);
 INSERT INTO Transactions VALUES (2, 45, '2022-11-07', 90);
 INSERT INTO Transactions VALUES (3, 75, '2022-11-08', 50);
+INSERT INTO Transactions VALUES (4, 80, '2022-12-01', 70.89);
+INSERT INTO Transactions VALUES (5, 50, '2022-12-02', 81);
+INSERT INTO Transactions VALUES (6, 100, '2022-12-03', 10.40);
+INSERT INTO Transactions VALUES (7, 85, '2022-12-04', 19);
 
 INSERT INTO Trade VALUES (1, '444444444', '123456789', 1, 1, 'GM');
 INSERT INTO Trade VALUES (1, '222222222', '123456789', 2, 2, 'IBM');
 INSERT INTO Trade VALUES (1, '444444444', '123456789', 3, 3, 'GM');
+INSERT INTO Trade VALUES (1, '333333333', '789123456', 4, 8, 'F');
+INSERT INTO Trade VALUES (1, '333333333', '789123456', 5, 9, 'F');
+INSERT INTO Trade VALUES (1, '444444444', '789123456', 6, 10, 'IBM');
+INSERT INTO Trade VALUES (1, '444444444', '789123456', 7, 11, 'IBM');
 
 INSERT INTO PriceHistory VALUES ('F', '2022-09-15', 9.00, 'Ford', 'automotive', 750);
 INSERT INTO PriceHistory VALUES ('GM', '2022-10-08', 34.23, 'General Motors', 'automotive', 1000);
@@ -441,37 +453,46 @@ CREATE PROCEDURE CustomerRepMostRevenue()
 BEGIN
 	START TRANSACTION;
 		SELECT t.BrokerId,
+		p.*,
+        e.*,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
         FROM Trade as t
         INNER JOIN Transactions AS trans ON trans.TxnId = t.TransactionId
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
-        ORDER BY 'REVENUE' DESC
-        LIMIT 1;
+        INNER JOIN Employee e ON e.EmpId = t.BrokerId
+        INNER JOIN Person p ON p.SSN = e.EmpId
+        ORDER BY 'REVENUE' DESC;
 	COMMIT;
 END$$
 DELIMITER ;
 
+CALL CustomerRepMostRevenue();
 
 # Determine which customer generated most total revenue
 DELIMITER $$
 CREATE PROCEDURE CustomerMostRevenue()
 BEGIN
 	START TRANSACTION;
-		SELECT t.ClientId,
+		SELECT c.*,
+        p.*,
         (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
         WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
         FROM Trade as t
         INNER JOIN Transactions AS trans ON trans.TxnId = t.TransactionId
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
+        INNER JOIN Clients c ON c.ClientId = t.ClientId
+		INNER JOIN Person p ON p.SSN = c.ClientId
+
         ORDER BY 'REVENUE' DESC
         LIMIT 1;
 	COMMIT;
 END$$
 DELIMITER ;
 
+CALL CustomerMostRevenue();
 
 # Produce a list of most actively traded stocks
 DELIMITER $$
@@ -821,6 +842,8 @@ BEGIN
 END $$
 DELIMITER ;
 
+CALL Best_Seller();
+
 DELIMITER $$
 CREATE PROCEDURE Add_Login(
 	IN UserEmail VARCHAR(255),
@@ -895,10 +918,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL SubmitOrder(50, 100, "2022-12-03", 0, "Market", "Buy", 1, "444444444", '0', "IBM");
-
-
-CALL SetSharePrice(123, 'F');
 SELECT * FROM Stock;
 SELECT * FROM PriceHistory;
 SELECT * FROM Clients;
@@ -916,6 +935,4 @@ BEGIN
 	SELECT * FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
 END$$
 DELIMITER ;
-
-CALL SuggestStock("444444444");
 

@@ -98,7 +98,37 @@ public class CustomerDao {
 		 * The customer record is required to be encapsulated as a "Customer" class object
 		 */
 
-		return getDummyCustomer();
+		Customer customer = new Customer();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("CALL CustomerMostRevenue()");
+			ResultSet rs = st.executeQuery();
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				customer.setClientId(rs.getString("ClientId"));
+				customer.setCreditCard((rs.getString("CreditCardNumber"))); //Date -> String
+				customer.setRating(rs.getInt("Rating"));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setEmail(rs.getString("Email"));
+				customer.setSsn(rs.getString("SSN"));
+				customer.setAddress(rs.getString("Address"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				customer.setLocation(location);
+				customer.setTelephone(rs.getString("Telephone"));
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return customer;
 	}
 
 	public Customer getCustomer(String customerID) {

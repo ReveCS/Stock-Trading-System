@@ -149,9 +149,13 @@ public class EmployeeDao {
 			
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+<<<<<<< Updated upstream
 			//Statement st = con.createStatement();
 			//ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
 			PreparedStatement st = con.prepareStatement("CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+=======
+			PreparedStatement st = con.prepareStatement("CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+>>>>>>> Stashed changes
 			
 			st.setString(1, employeeID);
 			st.setDate(2, sqlDate);
@@ -267,7 +271,7 @@ public class EmployeeDao {
 			while(rs.next()) {
 				employee.setId(rs.getString("EmpID"));
 				employee.setStartDate((rs.getString("startDate"))); //Date -> String
-				employee.setHourlyRate(rs.getFloat("hourlyRate"));
+				employee.setHourlyRate(rs.getFloat("HourlyRate"));
 				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
@@ -295,7 +299,39 @@ public class EmployeeDao {
 		 * The record is required to be encapsulated as a "Employee" class object
 		 */
 		
-		return getDummyEmployee();
+		Employee employee = new Employee();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
+			PreparedStatement st = con.prepareStatement("CALL CustomerRepMostRevenue()");
+			ResultSet rs = st.executeQuery();
+
+			/*Sample data begins*/
+			while(rs.next()) {
+				employee.setId(rs.getString("EmpId"));
+				employee.setStartDate((rs.getString("StartDate"))); //Date -> String
+				employee.setHourlyRate(rs.getFloat("HourlyRate"));
+				employee.setLevel((rs.getInt("EmpRole") == 0) ? "Employee":"Manager" );
+				employee.setFirstName(rs.getString("FirstName"));
+				employee.setLastName(rs.getString("LastName"));
+				employee.setEmail(rs.getString("Email"));
+				employee.setSsn(rs.getString("SSN"));
+				employee.setAddress(rs.getString("Address"));
+				Location location = new Location();
+				location.setCity(rs.getString("City"));
+				location.setState(rs.getString("State"));
+				location.setZipCode(rs.getInt("ZipCode"));
+				employee.setLocation(location);
+				employee.setTelephone(rs.getString("Telephone"));
+			}
+			/*Sample data ends*/
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		System.out.println(employee.getSsn());
+		return employee;
 	}
 
 	public String getEmployeeID(String username) {
@@ -304,14 +340,12 @@ public class EmployeeDao {
 		 * username, which is the Employee's email address who's Employee ID has to be fetched, is given as method parameter
 		 * The Employee ID is required to be returned as a String
 		 */
-		
 		String result = "";	
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("select * from Employee where email like \'%" + username + "%\'");
+
 			PreparedStatement st = con.prepareStatement("select * from Employee where email like ?");
 			st.setString(1, username);
 			ResultSet rs = st.executeQuery();
