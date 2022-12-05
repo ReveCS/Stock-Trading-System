@@ -457,13 +457,7 @@ DELIMITER $$
 CREATE PROCEDURE CustomerRepMostRevenue()
 BEGIN
 	START TRANSACTION;
-		SELECT t.BrokerId,
-		p.*,
-        e.*,
-        l.*,
-        (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
+		SELECT *
         FROM Trade as t
         INNER JOIN Transactions AS trans ON trans.TxnId = t.TransactionId
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
@@ -475,19 +469,13 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL CustomerRepMostRevenue();
 
 # Determine which customer generated most total revenue
 DELIMITER $$
 CREATE PROCEDURE CustomerMostRevenue()
 BEGIN
 	START TRANSACTION;
-		SELECT c.*,
-        p.*,
-        l.*,
-        (-1 * SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Buy')) + SUM((SELECT trans.PricePerShare*ord.NumShares
-        WHERE ord.OrderType = 'Sell'))) AS 'REVENUE'
+		SELECT *
         FROM Trade as t
         INNER JOIN Transactions AS trans ON trans.TxnId = t.TransactionId
         INNER JOIN Orders AS ord ON ord.OrderId = t.OrderId 
@@ -500,7 +488,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL CustomerMostRevenue();
 
 # Produce a list of most actively traded stocks
 DELIMITER $$
