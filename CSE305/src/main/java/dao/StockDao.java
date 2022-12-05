@@ -146,7 +146,6 @@ public class StockDao {
     	try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//ResultSet rs = st.executeQuery("CALL SetSharePrice(" + stockPrice + ", \'%" + stockSymbol + "\'%)");
 			PreparedStatement st = con.prepareStatement("CALL SetSharePrice(?, ?)");
 			
 			st.setDouble(1, stockPrice);
@@ -243,7 +242,6 @@ public class StockDao {
 		 * The students code to fetch data from the database will be written here
 		 * Get stockHoldings of customer with customerId
 		 */
-
 		List<Stock> result = new ArrayList<Stock>();
 
         try {
