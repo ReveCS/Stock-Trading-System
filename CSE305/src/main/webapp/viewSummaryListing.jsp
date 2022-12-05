@@ -4,15 +4,15 @@
 <%@ include file="header.jsp" %>
 <div class="container">
     <h2>Summary Listing</h2>
-    <h3>Search Item Name, Item Type or Customer Name:</h3>
+    <h3>Search Stock Symbol, Stock Type or Customer ID:</h3>
     <form action="getSummaryListing">
-        <input type="text" name="searchKeyword" placeholder="Item Name or Item Type or Customer ID"
+        <input type="text" name="searchKeyword" placeholder="Stock Symbol or Stock Type or Customer ID"
                class="form-control"/>
         <div class="form-group">
             <label for="keywordType">Keyword Type:</label>
             <select class="form-control" name="keywordType">
-            	<option value="Item Name"> <c:out value = "Item Name"/></option>
-            	<option value="Item Type"> <c:out value = "Item Type"/></option>
+            	<option value="Stock Symbol"> <c:out value = "Stock Symbol"/></option>
+            	<option value="Stock Type"> <c:out value = "Stock Type"/></option>
             	<option value="Customer Name"> <c:out value = "Customer ID"/></option>
             </select>
         </div>

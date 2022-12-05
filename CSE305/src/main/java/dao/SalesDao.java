@@ -82,7 +82,7 @@ public class SalesDao {
 		 */
     	List<RevenueItem> result = new ArrayList<RevenueItem>();
     	
-    	if (keywordType == "Item Name") {
+    	if (keywordType.equals("Stock Symbol")) {
     		try {
     			Class.forName("com.mysql.jdbc.Driver");
     			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
@@ -108,7 +108,7 @@ public class SalesDao {
     		}
     	}
     	
-    	else if (keywordType == "Item Type") {
+    	else if (keywordType.equals("Stock Type")) {
     		try {
     			Class.forName("com.mysql.jdbc.Driver");
     			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
