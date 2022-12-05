@@ -292,8 +292,32 @@ public class StockDao {
 		 * The students code to fetch data from the database will be written here
 		 * Return stock suggestions for given "customerId"
 		 */
+    	
+    	List<Stock> result = new ArrayList<Stock>();
+    	System.out.println(customerID);
+    	 try {
+ 			Class.forName("com.mysql.jdbc.Driver");
+ 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 
-        return getDummyStocks();
+ 			PreparedStatement st = con.prepareStatement("CALL SuggestStock(?);");
+ 			st.setString(1, (customerID));
+ 			ResultSet rs = st.executeQuery();
+ 			
+ 			while(rs.next()) {
+ 				Stock stock = new Stock();
+ 				stock.setSymbol(rs.getString("StockSymbol"));
+ 				stock.setName(rs.getString("CompanyName"));
+ 				stock.setNumShares(rs.getInt("NumShares"));
+ 				stock.setPrice(rs.getDouble("PricePerShare"));
+ 				stock.setType(rs.getString("Type"));
+ 				result.add(stock);
+ 			}
+
+ 		}catch (Exception e) {
+ 			System.out.println(e);
+ 		}
+         
+        return result;
 
     }
 
