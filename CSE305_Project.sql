@@ -338,6 +338,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+CALL SalesReport(11, 2022);
 
 # Produce a comprehensive listing of all stocks
 DELIMITER $$
@@ -943,4 +944,3 @@ BEGIN
 	SELECT * FROM Stock WHERE Type=(SELECT Type FROM Stock WHERE StockSymbol=(SELECT StockId FROM Trade WHERE ClientId=cId GROUP BY StockId ORDER BY COUNT(*) DESC LIMIT 1));
 END$$
 DELIMITER ;
-

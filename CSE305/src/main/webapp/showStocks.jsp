@@ -15,6 +15,8 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th>Number of stocks</th>
+                    <th>Stock Price</th>
+                    
                 </tr>
                 </thead>
                 <tbody>
@@ -24,6 +26,7 @@
                         <td>${cd.name}</td>
                         <td>${cd.type}</td>
                         <td>${cd.numShares}</td>
+                        <td>${cd.price}</td>
                         <td></td>
                     </tr>
                 </c:forEach>

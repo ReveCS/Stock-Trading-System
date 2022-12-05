@@ -239,7 +239,6 @@ public class StockDao {
     }
 
 	public List<Stock> getStocksByCustomer(String customerId) {
-
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Get stockHoldings of customer with customerId
@@ -250,8 +249,6 @@ public class StockDao {
         try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE \'%" + customerId + "\'%");
 			PreparedStatement st = con.prepareStatement("SELECT sp.ClientId, s.* FROM StockPortfolio sp INNER JOIN Stock s ON sp.Stock = s.StockSymbol WHERE ClientId LIKE ?");
 			st.setString(1, customerId);
 			ResultSet rs = st.executeQuery();
@@ -356,7 +353,6 @@ public class StockDao {
 			PreparedStatement st = con.prepareStatement("SELECT * FROM PriceHistory WHERE StockSymbol LIKE ?");
 			st.setString(1, stockSymbol);
 			ResultSet rs = st.executeQuery();
-			
 			
 			while(rs.next()) {
 				Stock stock = new Stock();
