@@ -68,9 +68,7 @@ public class EmployeeDao {
 		 * The sample code returns "success" by default.
 		 * You need to handle the database insertion of the employee details and return "success" or "failure" based on result of the database insertion.
 		 */
-		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
-		
+				
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
 		String startDate = employee.getStartDate(); //String -> Date
@@ -191,8 +189,6 @@ public class EmployeeDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
-			//Statement st = con.createStatement();
-			//ResultSet rs = st.executeQuery("delete from Employee where employeeID like \'%" + employeeID + "%\'");
 			PreparedStatement st = con.prepareStatement("CALL DeleteEmployee(?)");
 			st.setString(1, employeeID);
 			ResultSet rs = st.executeQuery();
