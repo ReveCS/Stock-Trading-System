@@ -127,9 +127,6 @@ public class EmployeeDao {
 		/*Sample data begins*/
 		String employeeID = employee.getEmployeeID();
 		String startDate = employee.getStartDate();
-		LocalDate localdate = LocalDate.parse(startDate, formatter); //String -> Date
-	    ZoneId defaultZoneId = ZoneId.systemDefault();
-		Date date = Date.from(localdate.atStartOfDay(defaultZoneId).toInstant());
 		float hourlyRate = employee.getHourlyRate();
 		String firstName = employee.getFirstName();
 		String lastName = employee.getLastName();
@@ -142,24 +139,32 @@ public class EmployeeDao {
 		int zipcode = location.getZipCode();
 		String telephone = employee.getTelephone();
 	
+		
+		
 		try {
+			// Convert date:
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date utilDate = format.parse(startDate);
+			java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+			
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Stonksmaster", "root", "root");
 			//Statement st = con.createStatement();
 			//ResultSet rs = st.executeQuery("CALL UpdateEmployee(\'%" + employeeID + "\'%, \'%" + date + "\'%, " + hourlyRate + ", \'%" + lastName + "\'%, \'%" + firstName + "\'%, \'%" + email + "\'%, \'%" + address + "\'%, " + zipcode + ", \'%" + city + "\'%, \'%" + state + "\'%, \\'%" + telephone + "\'%");
-			PreparedStatement st = con.prepareStatement("CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement st = con.prepareStatement("CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			
 			st.setString(1, employeeID);
-			st.setDate(2, date);
+			st.setDate(2, sqlDate);
 			st.setFloat(3, hourlyRate);
-			st.setString(4, lastName);
-			st.setString(5, firstName);
-			st.setString(6, email);
-			st.setString(7, address);
-			st.setInt(8, zipcode);
-			st.setString(9, city);
-			st.setString(10, state);
-			st.setString(11, telephone);
+			st.setInt(4, (employee.getLevel() == "Employee") ? 0 : 1);
+			st.setString(5, lastName);
+			st.setString(6, firstName);
+			st.setString(7, email);
+			st.setString(8, address);
+			st.setInt(9, zipcode);
+			st.setString(10, city);
+			st.setString(11, state);
+			st.setString(12, telephone);
 			
 			ResultSet rs = st.executeQuery();
 			
@@ -247,10 +252,7 @@ public class EmployeeDao {
 		 * The students code to fetch data from the database based on "employeeID" will be written here
 		 * employeeID, which is the Employee's ID who's details have to be fetched, is given as method parameter
 		 * The record is required to be encapsulated as a "Employee" class object
-		 */
-		
-		System.out.println(employeeID);
-		
+		 */		
 		Employee employee = new Employee();
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -283,8 +285,6 @@ public class EmployeeDao {
 		}catch (Exception e) {
 			System.out.println(e);
 		}
-		
-		System.out.println(employee.getSsn());
 		return employee;
 	}
 	
